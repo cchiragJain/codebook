@@ -14,6 +14,16 @@
   - [Event Object](#event-object)
   - [Event prevent Default](#event-prevent-default)
   - [Event Bubbling](#event-bubbling)
+- [Asynchronous JavaScript](#asynchronous-javascript)
+  - [HTTP Requests](#http-requests)
+  - [Callback functions](#callback-functions)
+  - [JSON Data](#json-data)
+  - [Callback hell](#callback-hell)
+  - [Promises](#promises)
+    - [Promises Example](#promises-example)
+    - [Chaining Promises](#chaining-promises)
+  - [Fetch API](#fetch-api)
+  - [Async & Await](#async--await)
 
 # Functions
 
@@ -210,6 +220,9 @@ para.classList.add("error");
 para.classList.remove("error");
 
 console.log(para.classList); // will give a array consisiting of classes
+
+// will remove if already there and add if not present
+para.classList.toggle("className");
 ```
 
 # Event Listeners
@@ -296,3 +309,271 @@ form.addEventListener("submit", function (e) {
 ```
 
 - If want to stop bubbling up inside the event object there is a method `e.stopPropogation()`.
+
+# Asynchronous JavaScript
+
+- Governs How we perform tasks that which take some time to complete ( ex. getting data from a database )
+- Javascript is single threaded by nature
+
+## HTTP Requests
+
+- Make requests to get data from another server
+- Requests are made to API endpoints
+- Make a `HTTP Request` to the api endpoint and get data back in `JSON format`
+
+- **Old method was to create a `XMLHttpRequest()`**
+
+```javascript
+const request = new XMLHttpRequest();
+request.addEventListener("readystatechange", () => {
+  // when request.readyState === 4 then the request is completed
+  // does not mean however that we got the resultant data or there may be some error as well
+  if (request.readyState === 4 && request.status === 200) {
+    console.log(request.responseText);
+  }
+});
+request.open("GET", "endpoint");
+request.send();
+```
+
+## Callback functions
+
+```javascript
+const getSomething = (callback) => {
+  const request = new XMLHttpRequest();
+  request.addEventListener("readystatechange", () => {
+    // when request.readyState === 4 then the request is completed
+    // does not mean however that we got the resultant data or there may be some error as well
+    if (request.readyState === 4 && request.status === 200) {
+      callback(undefined, request.responseText);
+    } else if (request.readyState === 4) {
+      callback("could not get the data", undefined);
+    }
+  });
+  request.open("GET", "endpoint");
+  request.send();
+};
+
+getSomething(
+  // a callback function
+  // convention error first and then data second
+  (err, data) => {
+    console.log("callback fired");
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(data);
+    }
+  }
+);
+```
+
+```javascript
+// can pass endpoint in the resource property
+const getSomething = (resource, callback) => {
+  const request = new XMLHttpRequest();
+  request.addEventListener("readystatechange", () => {
+    if (request.readyState === 4 && request.status === 200) {
+      callback(undefined, request.responseText);
+    } else if (request.readyState === 4) {
+      callback("could not get the data", undefined);
+    }
+  });
+  request.open("GET", resource);
+  request.send();
+};
+
+getSomething("someEndpoint", (err, data) => {
+  console.log("callback fired");
+});
+```
+
+- The above code will start and then finish later aside from the normal thread of js
+
+## JSON Data
+
+- The JSON data that we get is actually a string and can be converted to a JS array of objects
+- JSON use is to transfer data b/w server and client
+
+```javascript
+// inside a event listener
+const data = JSON.parse(request.responseText);
+```
+
+- JSON data key needs to be in a string and value as well
+  - numbers and booleans are fine
+
+```json
+[{ "text": "somethingn", "author": "shaun", "age": 20, "value": true }]
+```
+
+```json
+[
+  { "text": "somethingn", "author": "shaun", "age": 20, "value": true },
+  { "text": "there", "author": "hello", "age": 19, "value": false }
+]
+```
+
+## Callback hell
+
+- Callback within a callback within a callback...
+
+```javascript
+// can pass endpoint in the resource property
+const getSomething = (resource, callback) => {
+  const request = new XMLHttpRequest();
+  request.addEventListener("readystatechange", () => {
+    if (request.readyState === 4 && request.status === 200) {
+      callback(undefined, request.responseText);
+    } else if (request.readyState === 4) {
+      callback("could not get the data", undefined);
+    }
+  });
+  request.open("GET", resource);
+  request.send();
+};
+
+// WORKS -> WILL ONLY CALL THE INNER ONE AFTER OUTER IS COMPLETED
+// EVEN THOUGH THIS WORKS THIS CAN GET MESSY REALLY FAST
+getSomething("someEndpoint", (err, data) => {
+  console.log(data);
+  getSomething("someEndpoint", (err, data) => {
+    console.log(data);
+    getSomething("someEndpoint", (err, data) => {
+      console.log(data);
+    });
+  });
+});
+```
+
+## Promises
+
+- Promise is basically something that will take some time to do and will lead to two things either it is resolved(success) or rejected(failed).
+
+```javascript
+const doSomething = () => {
+  // resolve and reject are built into Promise API and will recieve as parameters
+  return new Promise((resolve, reject) => {
+    // fetch some data
+    resolve(data);
+    // reject(error);
+  });
+};
+```
+
+```javascript
+// then will take another callback method and will fire it when promise gets resolved or rejected
+// first one will be fired when resolved
+// second one will be fired when rejected
+doSomething().then(
+  (data) => {
+    console.log(data);
+  },
+  (error) => {
+    console.log(error);
+  }
+);
+```
+
+- Better way to do this is to use `catch`
+
+```javascript
+doSomething()
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+```
+
+### Promises Example
+
+```javascript
+const getSomething = (resource) => {
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.addEventListener("readystatechange", () => {
+      if (request.readyState === 4 && request.status === 200) {
+        resolve(data);
+      } else if (request.readyState === 4) {
+        reject("some error has occured");
+      }
+    });
+    request.open("GET", resource);
+    request.send();
+  });
+};
+
+getSomething("endpoint")
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+```
+
+### Chaining Promises
+
+```javascript
+getSomething("promise1Endpoint")
+  .then((data) => {
+    console.log("promise 1", data);
+    // this returns a promise so we can chain another then to this function
+    return getSomething("promise2Endpoint");
+  })
+  .then((data) => {
+    console.log("promise 2", data);
+    return getSomething("promise3Endpoint");
+  })
+  .then((data) => {
+    console.log("promise 2", data);
+  })
+  .catch((err) => {
+    // single catch wiil work for all of them
+    console.log("error", error);
+  });
+```
+
+## Fetch API
+
+- Easier and newer way to make requests as compared to `XMLHttpRequest`.
+- Uses the promise API
+- However only rejects when there is a network error
+- Use status codes to check if succes or not
+
+```javascript
+fetch("someEndpoint")
+  .then((response) => {
+    console.log("resolved", response);
+    // will return a promise and parse the json itself
+    return response.json();
+  })
+  .then((data) => {
+    console.log(data);
+  })
+  .catch((error) => {
+    console.log("rejected", error);
+  });
+```
+
+## Async & Await
+
+- Async function will always return a promise
+- What await does is to stop JS ( function is already async so will not stop the normal calls ) and return value only when the promise gets resolved
+- **Non blocking code**
+
+```javascript
+const getSomething = async () => {
+  const response = await fetch("someEndpoint");
+  // response.json() also returns a promise
+  const data = await response.json();
+
+  return data;
+};
+
+// BUT WILL STILL NEED TO USE A SINGLE .then() when the function gets called since async functions return promises
+
+getSomething().then(data => console.log("resolved", data););
+```

@@ -5,6 +5,7 @@
 - [CSS Selectors](#css-selectors)
   - [Tag, Class & Id Selectors](#tag-class--id-selectors)
   - [Pseudo Selectors](#pseudo-selectors)
+- [FlexBox](#flexbox)
 
 ## Tag, Class & Id Selectors
 
@@ -93,3 +94,7 @@ div::after {
   /* creates after the children of the selected element */
 }
 ```
+
+# FlexBox
+
+- [Refer this](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
