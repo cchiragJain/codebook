@@ -11,10 +11,16 @@
       - [Directories](#directories)
       - [Deleting files](#deleting-files)
     - [Streams & Buffer](#streams--buffer)
+      - [READSTREAM](#readstream)
+      - [WRITESTREAM](#writestream)
+      - [PIPING](#piping)
 - [Client & Servers](#client--servers)
 - [Requests & Responses](#requests--responses)
   - [Request Object](#request-object)
   - [Response Object](#response-object)
+    - [Basic Routing](#basic-routing)
+    - [Status Codes](#status-codes)
+      - [Redirecting to another page](#redirecting-to-another-page)
 
 # Introduction
 
@@ -188,7 +194,8 @@ if (fs.existsSync("./docs/deleteme.txt")) {
 - The data gets send in small packets known as `buffer` through the `stream` so everytime we get a new chunk of data from the source we can start using it
 - ex. streaming netflix ( the whole video is not send at a single time and only some of it is send)
 
-- **READSTREAM**
+#### READSTREAM
+
 - Read from a file
 - readStream is kind of like a event handler like in front end js
 - consider data to be an event
@@ -206,7 +213,8 @@ readStream.on("data", (chunk) => {
 });
 ```
 
-- **WRITESTREAM**
+#### WRITESTREAM
+
 - Write it to a file
 - ex.
 
@@ -219,7 +227,8 @@ readStream.on("data", (chunk) => {
 });
 ```
 
-- **PIPING**
+#### PIPING
+
 - Does the same thing but needs to be from a readStream to a writeStream
 
 ```javascript
@@ -295,3 +304,128 @@ server.listen(3000, "localhost", () => {
 
 - This is the response recieved by the browser
   ![](diagrams/responseobject.png)
+
+- Sending html back
+
+```javascript
+const server = http.createServer((req, res) => {
+  res.setHeader("Content-type", "text/html");
+
+  // will re write existing head tag
+  res.write('<head><link rel="stylesheet" href="#"');
+  // this will go in the body
+  res.write("<p>hello there</p>");
+  res.write("<p>hello again, again</p>");
+
+  res.end();
+});
+```
+
+- A very bad way to send the html back
+- Better is to create html in a seperate file and then send that file
+
+```javascript
+// inside createServer
+// send an html file
+fs.readFile("./views/index.html", (err, data) => {
+  if (err) {
+    console.log(err);
+    res.end();
+  } else {
+    res.write(data);
+    res.end();
+  }
+});
+```
+
+### Basic Routing
+
+```javascript
+const server = http.createServer((req, res) => {
+  res.setHeader("Content-type", "text/html");
+
+  // assume all html are stored in views folder
+  let path = "./views/";
+
+  // basic routing
+  // req.url gives the current url after localhost
+  switch (req.url) {
+    case "/":
+      path += "index.html";
+      break;
+    case "/about":
+      path += "about.html";
+      break;
+    default:
+      path += "404.html";
+      break;
+  }
+
+  // reads file at path
+  fs.readFile(path, (err, data) => {
+    if (err) {
+      console.log(err);
+      res.end();
+    } else {
+      res.write(data);
+      res.end();
+    }
+  });
+});
+```
+
+### Status Codes
+
+- Describe the type of response sent to the browser
+- `200` -> OK
+- `301` -> Resource Moved (permanent redirect to some other page)
+- `404` -> Not found
+- `500` -> Internal server error
+
+```javascript
+switch (req.url) {
+  case "/":
+    res.statusCode = 200;
+    path += "index.html";
+    break;
+  case "/about":
+    res.statusCode = 200;
+    path += "about.html";
+    break;
+  default:
+    res.statusCode = 404;
+    path += "404.html";
+    break;
+}
+```
+
+#### Redirecting to another page
+
+- Ex. user goes on `/about-me` but that has been moved to `/about`.
+
+```javascript
+// same as above{
+switch (req.url) {
+  case "/":
+    res.statusCode = 200;
+    path += "index.html";
+    break;
+  case "/about":
+    res.statusCode = 200;
+    path += "about.html";
+    break;
+  case "/about-me":
+    // will go to /about page and that again will send a request
+    res.statusCode = 301;
+    res.setHeader("Location", "/about");
+    res.end();
+    break;
+  default:
+    res.statusCode = 404;
+    path += "404.html";
+    break;
+}
+// }
+```
+
+![](./diagrams/redirectresponse.png)
