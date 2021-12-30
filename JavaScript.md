@@ -24,6 +24,7 @@
     - [Chaining Promises](#chaining-promises)
   - [Fetch API](#fetch-api)
   - [Async & Await](#async--await)
+  - [Axios](#axios)
 
 # Functions
 
@@ -176,7 +177,6 @@ let user = {
   age: 20,
   blogs: ["title 1", "title 2"],
   logBlogs() {
-    // THIS HERE REFERS TO THE WINDOW OBJECT AND NOT THE USER
     // console.log(this.blogs);
   },
 };
@@ -321,7 +321,7 @@ form.addEventListener("submit", function (e) {
 - Requests are made to API endpoints
 - Make a `HTTP Request` to the api endpoint and get data back in `JSON format`
 
-- **Old method was to create a `XMLHttpRequest()`**
+- **Old method is to create a `XMLHttpRequest()`**
 
 ```javascript
 const request = new XMLHttpRequest();
@@ -575,5 +575,69 @@ const getSomething = async () => {
 
 // BUT WILL STILL NEED TO USE A SINGLE .then() when the function gets called since async functions return promises
 
-getSomething().then(data => console.log("resolved", data););
+getSomething().then((data) => {
+  console.log("resolved", data);
+});
+```
+
+## Axios
+
+- Library that makes it easier to make requests
+- Takes only 1 step to request and parse the json data
+- Include using cdn link for frontend just make sure it is before app.js script tag
+
+```javascript
+axios
+  .get("endpoint")
+  .then((response) => {
+    console.log(response.data);
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+```
+
+- Example,
+
+```javascript
+const getSomething = async () => {
+  const response = await axios.get("endpoint");
+  return response.data;
+};
+```
+
+**Better to put it in a try catch block**
+
+```javascript
+const getSomething = async () => {
+  try {
+    const response = await axios.get("endpoint");
+    return response.data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+```
+
+- Can add headers to the request as well
+
+```javascript
+const getSomething = async () => {
+  // not every API requires a header
+  const config = { headers: { Accept: "someHeaderForTheAPI" } };
+  const response = await axios.get("endpoint", config);
+  return response.data;
+};
+```
+
+- Can also add params to the axios request rather than using string literals
+
+```javascript
+const getSomething = async () => {
+  // some searchTerm maybe from a form input or something
+  const config = { params: { q: searchTerm } };
+  const response = await axios.get("endpoint", config);
+
+  return response.data;
+};
 ```
