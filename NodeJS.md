@@ -11,8 +11,8 @@
       - [Directories](#directories)
       - [Deleting files](#deleting-files)
     - [Streams & Buffer](#streams--buffer)
-      - [READSTREAM](#readstream)
-      - [WRITESTREAM](#writestream)
+      - [ReadStream](#readstream)
+      - [WriteStream](#writestream)
       - [PIPING](#piping)
 - [Client & Servers](#client--servers)
 - [Requests & Responses](#requests--responses)
@@ -21,6 +21,12 @@
     - [Basic Routing](#basic-routing)
     - [Status Codes](#status-codes)
       - [Redirecting to another page](#redirecting-to-another-page)
+- [NPM](#npm)
+- [Express](#express)
+  - [Creating a basic server](#creating-a-basic-server)
+  - [Routes and sending html pages](#routes-and-sending-html-pages)
+  - [Redirects & 404 pages](#redirects--404-pages)
+- [View Engines](#view-engines)
 
 # Introduction
 
@@ -194,7 +200,7 @@ if (fs.existsSync("./docs/deleteme.txt")) {
 - The data gets send in small packets known as `buffer` through the `stream` so everytime we get a new chunk of data from the source we can start using it
 - ex. streaming netflix ( the whole video is not send at a single time and only some of it is send)
 
-#### READSTREAM
+#### ReadStream
 
 - Read from a file
 - readStream is kind of like a event handler like in front end js
@@ -213,7 +219,7 @@ readStream.on("data", (chunk) => {
 });
 ```
 
-#### WRITESTREAM
+#### WriteStream
 
 - Write it to a file
 - ex.
@@ -429,3 +435,95 @@ switch (req.url) {
 ```
 
 ![](./diagrams/redirectresponse.png)
+
+# NPM
+
+- NPM -> Node Package Manager
+- Install nodemon globally to get live server reload
+
+```
+npm install -g nodemon
+```
+
+- To install other libraries/dependencies
+
+```
+npm install package_name
+```
+
+- To install all dependencies if no `node_modules` folder
+- Will install all the dependecies present in `package.json` file
+
+```
+npm install
+```
+
+# Express
+
+- Using Express makes writing node code much easier but everything can be done with only using node as well
+- Install using
+
+```
+npm install express
+```
+
+## Creating a basic server
+
+- `res.send()` is much better and is available to us in express which can set content type header for us based on the data and sets status codes as well
+
+```javascript
+const express = require("express");
+
+// create express app
+const app = express();
+
+// listen for requests
+// infers localhost
+app.listen(3000);
+
+// make a request
+app.get("/", (req, res) => {
+  // can do res.write but res.send is better
+  // set content type header for us based on the data
+  // sets status codes as well
+
+  res.send("<p>Home page</p>");
+});
+```
+
+## Routes and sending html pages
+
+- To create routes create get requests rather than using switch case
+- For sending html pages Need to specify whose root should the file path be
+- First goes into current dir and then from there goes to the views folder
+
+```javascript
+app.get("/about", (req, res) => {
+  // __dirname gives the current directory
+  res.sendFile("./views/about.html", { root: __dirname });
+});
+```
+
+## Redirects & 404 pages
+
+```javascript
+app.get("/about-me", (req, res) => {
+  // will set headers automatically
+  res.redirect("/about");
+});
+```
+
+- For 404 pages
+  - `app.use` will fire everytime a request is made if the code reaches till that point
+  - It should be placed at the last
+  - Also need to specify status code for this case specifically
+
+```javascript
+app.use((req, res) => {
+  // will need to specify status code in case of this specifically
+  res.status(404).sendFile("./views/404.html", { root: __dirname });
+});
+```
+
+# View Engines
+
