@@ -13,20 +13,22 @@
     - [Streams & Buffer](#streams--buffer)
       - [ReadStream](#readstream)
       - [WriteStream](#writestream)
-      - [PIPING](#piping)
+      - [Piping](#piping)
 - [Client & Servers](#client--servers)
 - [Requests & Responses](#requests--responses)
   - [Request Object](#request-object)
   - [Response Object](#response-object)
     - [Basic Routing](#basic-routing)
     - [Status Codes](#status-codes)
-      - [Redirecting to another page](#redirecting-to-another-page)
+    - [Redirecting to another page](#redirecting-to-another-page)
 - [NPM](#npm)
 - [Express](#express)
   - [Creating a basic server](#creating-a-basic-server)
   - [Routes and sending html pages](#routes-and-sending-html-pages)
   - [Redirects & 404 pages](#redirects--404-pages)
 - [View Engines](#view-engines)
+  - [Passing data into views](#passing-data-into-views)
+  - [Partials](#partials)
 
 # Introduction
 
@@ -233,7 +235,7 @@ readStream.on("data", (chunk) => {
 });
 ```
 
-#### PIPING
+#### Piping
 
 - Does the same thing but needs to be from a readStream to a writeStream
 
@@ -405,7 +407,7 @@ switch (req.url) {
 }
 ```
 
-#### Redirecting to another page
+### Redirecting to another page
 
 - Ex. user goes on `/about-me` but that has been moved to `/about`.
 
@@ -527,3 +529,123 @@ app.use((req, res) => {
 
 # View Engines
 
+- Using view engine we can do dynamic templating
+- Have html code we can change dynamically add loops,if checks etc.
+- Using `ejs` view engine
+- To tell the app we are using view engine
+
+```javascript
+// registers the view engine
+app.set("view engine", "ejs");
+```
+
+- By default is going to look for a `views` folder but can change it
+
+```javascript
+app.set("views", "myviews");
+```
+
+- `ejs` files uses html syntax only and to send them as response we can `render the view`
+
+```javascript
+app.get("/", (req, res) => {
+  res.render("index"); // no need to mention the extension
+});
+```
+
+## Passing data into views
+
+- To use dynamic enclose it within `<%` ex.
+  - `<% const name = "hello" %>`
+- To reference this
+
+  - `<%= name %>`
+
+- But mostly going to send something by the app and then update the value in the template
+
+```javascript
+// app.js
+app.get("/", (req, res) => {
+  res.render("index", { title: "some title" });
+});
+```
+
+- Can access this title value in the index.ejs file now
+
+```html
+<!-- index.ejs -->
+<%= title %>
+```
+
+- Can pass any kind of data
+
+```javascript
+app.get("/", (req, res) => {
+  const blogs = [
+    {
+      title: "Title 1",
+      snippet:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis, commodi!",
+    },
+    {
+      title: "Title 2",
+      snippet:
+        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis, commodi!",
+    },
+  ];
+  // blogs : blogs since blogs is same we can just leave it at blogs
+  res.render("index", { title: "Home", blogs });
+});
+```
+
+- To access it inside a ejs file
+
+```
+<div class="blogs content">
+  <h2>All Blogs</h2>
+  <% if(blogs.length> 0){ %>
+  <% blogs.forEach(blog=> { %>
+  <h3 class="title"><%= blog.title %></h3>
+  <p class="snippet"><%= blog.snippet %></p>
+  <% }) %>
+  <% } else {%>
+  <h3>No blogs to display</h3>
+  <% } %>
+</div>
+```
+
+![](./diagrams/ejstemplates.png)
+
+## Partials
+
+- A lot of files can have repeated content in the template like navbars, head, footers etc. which can be put into one file using `<%- include('filepath') %>`
+
+- Define what want to use inside ejs file
+
+```html
+<!-- ex -->
+<!-- nav.ejs -->
+<!-- define inside partials folder -->
+<nav>
+  <div class="site-title">
+    <a href="/">
+      <h1>My Blog</h1>
+    </a>
+    <p>My Site</p>
+  </div>
+  <ul>
+    <li><a href="/">Blogs</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="/blogs/create">New Blogs</a></li>
+  </ul>
+</nav>
+```
+
+- Use it in another file
+
+```html
+<body>
+  <!-- will include all the nav code in here -->
+  <%- include('./partials/nav.ejs') %>
+</body>
+```
