@@ -29,6 +29,11 @@
 - [View Engines](#view-engines)
   - [Passing data into views](#passing-data-into-views)
   - [Partials](#partials)
+- [Middleware](#middleware)
+  - [next()](#next)
+  - [Morgan](#morgan)
+  - [Serving static files like css,img](#serving-static-files-like-cssimg)
+- [MongoDB](#mongodb)
 
 # Introduction
 
@@ -649,3 +654,78 @@ app.get("/", (req, res) => {
   <%- include('./partials/nav.ejs') %>
 </body>
 ```
+
+# Middleware
+
+- Code which runs(on the server) between getting a request and sending a response.
+  ![](./diagrams/middleware.png)
+- Generally `app.use()` are used for middlewares like in `404 page ` case.
+- Any code basically (even get requests)
+  ![](./diagrams/middlewarereq.png)
+- Uses
+  - Log details of every request
+  - Authentication check
+  - Parse JSON data
+  - Return 404 pages
+
+```javascript
+app.use((req, res) => {
+  console.log("new request made:");
+  console.log("host", req.hostname);
+  console.log("path", req.path);
+  console.log("method", req.method);
+});
+```
+
+## next()
+
+- The middleware does not no what to do next so need to use the `next()` method to tell to go to the next thing
+
+```javascript
+app.use((req, res, next) => {
+  console.log("new request made:");
+  console.log("host", req.hostname);
+  console.log("path", req.path);
+  console.log("method", req.method);
+  next(); // idhar
+});
+```
+
+## Morgan
+
+- External Logging middleware can be used in node apps
+
+```javascript
+const morgan = require("morgan");
+app.use(morgan("morgan_option"));
+```
+
+## Serving static files like css,img
+
+- Server protects the files by itself so that any user can't access them by just going to that file so need to specify which files can be accessed by the user
+- Can use `express.static()`middleware for that
+- Will make anything present in the public folder to be accessible to the browser
+- Can put things like css and images in there
+
+```javascript
+app.use(express.static("public"));
+```
+
+```html
+<!-- No need to mention that it is from public folder will look only into that folder -->
+<link rel="stylesheet" href="/styles.css" />
+```
+
+# MongoDB
+
+![](./diagrams/sqlvsnosql.png)
+
+- Each collection is used to store a particular type of data.
+  - Ex. user collection, blog collection
+- Each collection will store documents as data
+  - A document is like a record which represent a single item of data
+
+![](./diagrams/documentmongo.png)
+
+- A document looks like a JS object which holds key-value pairs along with a unique `__id`.
+-
