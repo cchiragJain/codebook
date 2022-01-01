@@ -43,6 +43,10 @@
     - [Getting data](#getting-data)
 - [Get, Post & Delete Requests](#get-post--delete-requests)
   - [Request Types](#request-types)
+  - [Handling POST Requests](#handling-post-requests)
+  - [Route Parameters](#route-parameters)
+    - [Getting a single document based on id](#getting-a-single-document-based-on-id)
+  - [Delete request](#delete-request)
 
 # Introduction
 
@@ -882,7 +886,113 @@ app.get("/single-blog", (req, res) => {
 
 ## Request Types
 
+- HTML forms only do `GET` & `POST` requests can't do delete and put there
 - **`GET`** -> request to get a resource
 - **`POST`** -> requests to create new data ( eg a new blog )
 - **`DELETE`** -> requests to delete data ( eg delete a blog )
 - **`PUT`** -> requests to update data ( eg update a blog )
+  ![](./diagrams/requesttypes.png)
+
+## Handling POST Requests
+
+- Update the form tag in html and add action(where we want to go) and method to post.
+  - Also add name attribute in the input fields to be able to access the data inside our post request
+
+```html
+<form action="/blogs" method="POST">
+  <label for="title">Blog title</label>
+  <input type="text" id="title" name="title" required />
+</form>
+```
+
+- To get url encoded data to our req object in the post method we need to use middleware inside express.
+
+```javascript
+// takes all the url encoded data that comes after submitting a form and passes it to the request object
+app.use(express.urlencoded({ extended: true }));
+
+app.post("/blogs", (req, res) => {
+  // can only access body here because we use the urlencoded middleware above
+  const blog = new Blog(req.body);
+  blog
+    .save()
+    .then((result) => {
+      // after submitting go back to the main blogs page
+      res.redirect("/blogs");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+```
+
+## Route Parameters
+
+![](./diagrams/routeparam.png)
+
+### Getting a single document based on id
+
+- `:id` is the route parameter to which we are doing a get request to and then rendering it to a details view
+
+```javascript
+app.get("/blogs/:id", (req, res) => {
+  const id = req.params.id;
+  Blog.findById(id)
+    .then((result) => {
+      res.render("details", { title: "Blog details", blog: result });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+```
+
+- **WILL BE BETTER TO USE ASYNC-AWAIT SYNTAX RATHER THAN THE FETCH API**
+- Should be inside a try catch block but this also works for now
+- ex.
+
+```javascript
+app.get("/blogs", async (req, res) => {
+  const blogs = await Blog.find().sort({ createdAt: -1 });
+  res.render("index", { title: "All blogs", blogs });
+});
+
+app.post("/blogs", async (req, res) => {
+  // can only access body here because we use the urlencoded middleware above
+  const newBlog = new Blog(req.body);
+  await newBlog.save();
+  res.redirect(`/blogs/${newBlog._id}`);
+});
+
+app.get("/blogs/:id", async (req, res) => {
+  const { id } = req.params;
+  const blog = await Blog.findById(id);
+  res.render("details", { title: "Blog details", blog });
+});
+```
+
+## Delete request
+
+- Browser only knows how to do `GET`(to get data) & `POST`(to send data) requests
+- We can use `method-override` middleware to make fake post requests masked as delete/put requests
+
+```javascript
+app.use(methodOverride("_method"));
+```
+
+```html
+<!-- we are putting the method inside the action as a hidden request -->
+<form action="/blogs/<%= blog._id %>?_method=DELETE" method="post">
+  <button class="delete">Delete</button>
+</form>
+```
+
+- Deleting
+
+```javascript
+app.delete("/blogs/:id", async (req, res) => {
+  const id = req.params.id;
+  await Blog.findByIdAndDelete(id);
+  res.redirect("/blogs");
+});
+```
