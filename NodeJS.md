@@ -34,6 +34,15 @@
   - [Morgan](#morgan)
   - [Serving static files like css,img](#serving-static-files-like-cssimg)
 - [MongoDB](#mongodb)
+  - [Mongoose](#mongoose)
+  - [Schemas and Models](#schemas-and-models)
+    - [Creating schema](#creating-schema)
+    - [Creating model](#creating-model)
+  - [Getting and Saving data](#getting-and-saving-data)
+    - [Saving data](#saving-data)
+    - [Getting data](#getting-data)
+- [Get, Post & Delete Requests](#get-post--delete-requests)
+  - [Request Types](#request-types)
 
 # Introduction
 
@@ -728,4 +737,152 @@ app.use(express.static("public"));
 ![](./diagrams/documentmongo.png)
 
 - A document looks like a JS object which holds key-value pairs along with a unique `__id`.
--
+
+- Create a new cluster and then a new database on mongodb atlas and then connect it using dbURI.
+
+## Mongoose
+
+- Using mongodb api can get clunky
+- Mongoose wraps the mongodb api and provides easier methods to connect & communicate with the database
+
+```javascript
+const mongoose = require("mongoose");
+// connect to mongodb
+// CHANGE THE dbURI ACCORDINGLY TO WHAT THE MONGODB ATLAS SAYS
+const dbURI =
+  "mongodb+srv://chirag:test1234@nodetutorial.gzmhr.mongodb.net/node-tutorial?retryWrites=true&w=majority";
+
+// mongoose.connect will be async (take some time)
+mongoose
+  .connect(dbURI)
+  .then((result) => console.log("connected to db"))
+  .catch((err) => console.log(err));
+```
+
+- Dont want to go to a web page before connected to db already so better to listen for requests in the db connection
+
+```javascript
+mongoose
+  .connect(dbURI)
+  .then((result) => app.listen(3000))
+  .catch((err) => console.log(err));
+```
+
+## Schemas and Models
+
+- Schema defines the structure of the data/document and then we create a model based on that schema
+- Models allow us to communicate with database collections
+
+![](./diagrams/schema.png)
+![](./diagrams/model.png)
+
+### Creating schema
+
+```javascript
+const mongoose = require("mongoose");
+// Schema is a constructor function
+const Schema = mongoose.Schema;
+
+const blogSchema = new Schema(
+  {
+    title: {
+      // can mention what properties that particular data should have
+      type: String,
+      required: true,
+    },
+    snippet: {
+      type: String,
+      required: true,
+    },
+    body: {
+      type: String,
+      required: true,
+    },
+  },
+  // timestamps assigns createdAt to the schema
+  { timestamps: true }
+);
+```
+
+### Creating model
+
+- This model is created around our blogSchema
+- The name for model needs to be singular of the database collection since it will look that up in our db
+- Blogs collection and blog model
+
+```javascript
+const Blog = mongoose.model("Blog", blogSchema);
+module.exports = Blog;
+```
+
+- Also export it afterwards to be used in other files.
+
+## Getting and Saving data
+
+### Saving data
+
+- Create a new document of the Blog model and then use the `save()` method on it
+- `save()` is async so use then and catch blocks on it as well.
+
+```javascript
+app.get("/add-blog", (req, res) => {
+  const blog = new Blog({
+    title: "new Blog",
+    snippet: "about my new blog",
+    body: "more about my new blog",
+  });
+
+  // do this to the blog which uses the model Blog which is based on the blogSchema
+  blog
+    .save()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+```
+
+### Getting data
+
+- Get all documents
+
+```javascript
+app.get("/all-blogs", (req, res) => {
+  // Blog model ko use karke find kar rahe
+  Blog.find()
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+```
+
+- Get single
+- Object Id is present on all documents
+
+```javascript
+app.get("/single-blog", (req, res) => {
+  Blog.findById("61cf1f2e2749007943f759b3")
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+```
+
+- To render this just send the result array to the view
+
+# Get, Post & Delete Requests
+
+## Request Types
+
+- **`GET`** -> request to get a resource
+- **`POST`** -> requests to create new data ( eg a new blog )
+- **`DELETE`** -> requests to delete data ( eg delete a blog )
+- **`PUT`** -> requests to update data ( eg update a blog )
