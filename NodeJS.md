@@ -47,6 +47,8 @@
   - [Route Parameters](#route-parameters)
     - [Getting a single document based on id](#getting-a-single-document-based-on-id)
   - [Delete request](#delete-request)
+- [Express Router](#express-router)
+- [MVC](#mvc)
 
 # Introduction
 
@@ -974,7 +976,7 @@ app.get("/blogs/:id", async (req, res) => {
 ## Delete request
 
 - Browser only knows how to do `GET`(to get data) & `POST`(to send data) requests
-- We can use `method-override` middleware to make fake post requests masked as delete/put requests
+- We can use `method-override` middleware to make fake get/post requests masked as delete/put/patch requests
 
 ```javascript
 app.use(methodOverride("_method"));
@@ -996,3 +998,42 @@ app.delete("/blogs/:id", async (req, res) => {
   res.redirect("/blogs");
 });
 ```
+
+- Edit/update
+
+```javascript
+app.put("/blogs/:id", async (req, res) => {
+  const { id } = req.params;
+  const blog = await Blog.findByIdAndUpdate(id, req.body);
+  res.redirect(`/blogs/${blog._id}`);
+});
+```
+
+# Express Router
+
+- Putting all routes in one file can become messy and it's better to put specific routes in seperate files in a routes folder
+- ex.
+
+```javascript
+// blogRoutes.js
+const express = require("express");
+const Blog = require("../models/blog");
+
+const router = express.Router();
+
+router.get("/", async (req, res) => {
+  const blogs = await Blog.find().sort({ createdAt: -1 });
+  res.render("index", { title: "All blogs", blogs });
+});
+
+module.exports = router;
+```
+
+- While defining routes don't need to mention blogs again and again since already scoped it out when declaring
+
+```javascript
+// app.js 
+app.use("/blogs", blogRoutes);
+```
+
+# MVC
