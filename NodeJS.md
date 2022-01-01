@@ -49,6 +49,7 @@
   - [Delete request](#delete-request)
 - [Express Router](#express-router)
 - [MVC](#mvc)
+  - [Controllers](#controllers)
 
 # Introduction
 
@@ -1032,8 +1033,37 @@ module.exports = router;
 - While defining routes don't need to mention blogs again and again since already scoped it out when declaring
 
 ```javascript
-// app.js 
+// app.js
 app.use("/blogs", blogRoutes);
 ```
 
 # MVC
+
+- MVC -> Model, View, Controller
+- Way of structuring code & files
+- Keeps code modular
+  ![](./diagrams/mvc.png)
+
+## Controllers
+
+- Controllers are like the middlemen that forms the link b/w model and views
+- ex.
+
+```javascript
+// blogController.js
+const Blog = require("../models/blog");
+
+const blog_index = async (req, res) => {
+  const blogs = await Blog.find().sort({ createdAt: -1 });
+  res.render("index", { title: "All blogs", blogs });
+};
+```
+
+```javascript
+// blogRoutes.js
+const express = require("express");
+const blogController = require("../controllers/blogController");
+const router = express.Router();
+
+router.get("/", blogController.blog_index);
+```
