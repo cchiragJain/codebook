@@ -111,3 +111,36 @@ socket.on("chat", (data) => {
 ```
 
 ## Broadcasting
+
+- What we did till now was to when client emits a message it goes to the server which was listening for it then the server emits back to all the sockets including the original one.
+- Broadcasting does not send to the original socket
+
+```javascript
+// frontend client
+// normal emit from here
+messageInput.addEventListener("keypress", () => {
+  socket.emit("typing", {
+    handle: handleInput.value,
+  });
+});
+```
+
+- Inside our connection reciev data of type 'typing' and then broadcast it
+- This is not send to all the sockets using broadcasting
+
+```javascript
+// backend
+socket.on("typing", (data) => {
+  // this message should not be emitted to all the sockets rather than get broadcasted to all the other sockets
+  socket.broadcast.emit("typing", data);
+});
+```
+
+- Listen for the typing data normally
+
+```javascript
+// frontend
+socket.on("typing", (data) => {
+  feedbackWindow.innerHTML = `<p><em>${data.handle}</em> is typing...</p>`;
+});
+```
