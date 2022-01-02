@@ -457,7 +457,7 @@ switch (req.url) {
 // }
 ```
 
-![](./diagrams/redirectresponse.png)
+![](./diagrams/nodejs/redirectresponse.png)
 
 # NPM
 
@@ -635,7 +635,7 @@ app.get("/", (req, res) => {
 </div>
 ```
 
-![](./diagrams/ejstemplates.png)
+![](./diagrams/nodejs/ejstemplates.png)
 
 ## Partials
 
@@ -674,10 +674,10 @@ app.get("/", (req, res) => {
 # Middleware
 
 - Code which runs(on the server) between getting a request and sending a response.
-  ![](./diagrams/middleware.png)
+  ![](./diagrams/nodejs/middleware.png)
 - Generally `app.use()` are used for middlewares like in `404 page ` case.
 - Any code basically (even get requests)
-  ![](./diagrams/middlewarereq.png)
+  ![](./diagrams/nodejs/middlewarereq.png)
 - Uses
   - Log details of every request
   - Authentication check
@@ -734,14 +734,14 @@ app.use(express.static("public"));
 
 # MongoDB
 
-![](./diagrams/sqlvsnosql.png)
+![](./diagrams/nodejs/sqlvsnosql.png)
 
 - Each collection is used to store a particular type of data.
   - Ex. user collection, blog collection
 - Each collection will store documents as data
   - A document is like a record which represent a single item of data
 
-![](./diagrams/documentmongo.png)
+![](./diagrams/nodejs/documentmongo.png)
 
 - A document looks like a JS object which holds key-value pairs along with a unique `__id`.
 
@@ -780,8 +780,8 @@ mongoose
 - Schema defines the structure of the data/document and then we create a model based on that schema
 - Models allow us to communicate with database collections
 
-![](./diagrams/schema.png)
-![](./diagrams/model.png)
+![](./diagrams/nodejs/schema.png)
+![](./diagrams/nodejs/model.png)
 
 ### Creating schema
 
@@ -894,7 +894,7 @@ app.get("/single-blog", (req, res) => {
 - **`POST`** -> requests to create new data ( eg a new blog )
 - **`DELETE`** -> requests to delete data ( eg delete a blog )
 - **`PUT`** -> requests to update data ( eg update a blog )
-  ![](./diagrams/requesttypes.png)
+  ![](./diagrams/nodejs/requesttypes.png)
 
 ## Handling POST Requests
 
@@ -931,7 +931,7 @@ app.post("/blogs", (req, res) => {
 
 ## Route Parameters
 
-![](./diagrams/routeparam.png)
+![](./diagrams/nodejs/routeparam.png)
 
 ### Getting a single document based on id
 
@@ -1042,7 +1042,7 @@ app.use("/blogs", blogRoutes);
 - MVC -> Model, View, Controller
 - Way of structuring code & files
 - Keeps code modular
-  ![](./diagrams/mvc.png)
+  ![](./diagrams/nodejs/mvc.png)
 
 ## Controllers
 
