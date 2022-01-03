@@ -5,4 +5,3 @@ Contains Software Development Notes
 - [NodeJS](./NodeJS.md)
 - [Socket.io](./Socketio.md)
 - [ReactJS](./ReactJS.md)
-- [JWTAuthentication](./JWTAuthentication.md)
