@@ -10,6 +10,12 @@
   - [Outputting lists](#outputting-lists)
   - [Passing data to components using Props](#passing-data-to-components-using-props)
     - [Passing functions as props](#passing-functions-as-props)
+- [useEffect Hook](#useeffect-hook)
+  - [Dependency Array of useEffect Hook](#dependency-array-of-useeffect-hook)
+  - [Fetching data](#fetching-data)
+  - [Conditional Template](#conditional-template)
+  - [Fetching errors](#fetching-errors)
+- [Making custom hooks](#making-custom-hooks)
 
 # Introduction
 
@@ -374,3 +380,116 @@ const BlogList = ({ blogs, title, handleDelete }) => {
   );
 };
 ```
+
+# useEffect Hook
+
+- Runs everytime when there is a re-render
+- Useful when we have to fetch data or auth service (side effects in react)
+- Don't change state in useEffect since it can lead to infinite loop of changing state -> re-render -> useEffect runs -> change state...
+
+## Dependency Array of useEffect Hook
+
+- If we want that useEffect should only run if a certain state changes we can pass it to the _dependency array_
+
+```javascript
+useEffect(() => {
+  console.log("use effect run");
+}, [name]);
+```
+
+- Will only run if there is a change in state of name.
+- Passing an empty array will make sure that it runs only once at the starting so can change state in that case
+
+```javascript
+useEffect(() => {
+  console.log("use effect run only at the start");
+}, []);
+```
+
+## Fetching data
+
+- Can't make the useEffect callback function async need to use a `.then` to resolve promises inside it
+- If want to use `async-await` syntax declare a seperate function and call it from the useEffect hook
+
+```javascript
+useEffect(() => {
+  axios
+    .get("http://localhost:8000/blogs")
+    .then((res) => {
+      setBlogs(res.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  // will only run once because of this dependency array
+  // fetch data only once
+}, []);
+```
+
+## Conditional Template
+
+- _If state is initially null and our request from useEffect hook will take some time then we need to use conditional render using `&&` operator_ ex.
+
+```javascript
+const [blogs, setBlogs] = useState(null);
+useEffect(() => {
+  // gets some data
+  setBlogs(newData);
+});
+return (
+  <div className="home">
+    // if blogs initially null will not render it since false
+    {blogs && (
+      <BlogList blogs={blogs} title="All Blogs" handleDelete={handleDelete} />
+    )}
+  </div>
+);
+```
+
+## Fetching errors
+
+- If we get errors while making a request we can throw it and then catch it inside of then-catch statements and output that error by storing it inside state.
+
+```javascript
+// this is what the file looks till now
+//
+import { useState, useEffect } from "react";
+import BlogList from "./BlogList";
+
+const Home = () => {
+  const [blogs, setBlogs] = useState(null);
+  const [isPending, setIsPending] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/blogss")
+      .then((res) => {
+        if (!res.ok) {
+          throw Error("Could not fetch the data");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setBlogs(data);
+        setIsPending(false);
+        setError(null);
+      })
+      .catch((err) => {
+        setIsPending(false);
+        setError(err.message);
+      });
+  }, []);
+
+  return (
+    <div className="home">
+      {error && <div>{error}</div>}
+      {isPending && <div>Loading...</div>}
+      {blogs && <BlogList blogs={blogs} title="All Blogs" />}
+    </div>
+  );
+};
+
+export default Home;
+```
+
+# Making custom hooks
