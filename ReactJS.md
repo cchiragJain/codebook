@@ -16,6 +16,15 @@
   - [Conditional Template](#conditional-template)
   - [Fetching errors](#fetching-errors)
 - [Making custom hooks](#making-custom-hooks)
+- [React Router](#react-router)
+  - [Route Links](#route-links)
+  - [useEffect Cleanup](#useeffect-cleanup)
+  - [Route Parameters](#route-parameters)
+- [Forms in React & Controlled Inputs](#forms-in-react--controlled-inputs)
+  - [Controlled Inputs](#controlled-inputs)
+  - [Submiting forms](#submiting-forms)
+  - [Programming Redirect](#programming-redirect)
+- [404 Pages](#404-pages)
 
 # Introduction
 
@@ -493,3 +502,409 @@ export default Home;
 ```
 
 # Making custom hooks
+
+- We can have a lot of code that gets resused over which essentialy does the same thing differently ex. fetching some data and then setting state errors
+- Custom hooks need to start with the `use` keyword otherwise won't work
+- ex. converting above fetch function to a hook which takes in a url and has a dependency on it
+
+```javascript
+//useFetch.js
+import { useState, useEffect } from "react";
+
+// this hooks does is to declare initial state and whenever the url updates it sets the state to the new one
+const useFetch = (url) => {
+  const [data, setData] = useState(null);
+  const [isPending, setIsPending] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // only using setTimeout to simulate a real request
+    setTimeout(() => {
+      fetch(url)
+        .then((res) => {
+          if (!res.ok) {
+            throw Error("Could not fetch the data for that resource");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          setData(data);
+          setIsPending(false);
+          setError(null);
+        })
+        .catch((err) => {
+          setIsPending(false);
+          setError(err.message);
+        });
+    }, 500);
+  }, [url]); // will need to pass url as a dependency since whenever it changes it should re-run
+
+  // when using hooks generally return an array but by using object we don't have to worry about the order in which we get stuff back
+  return { data, isPending, error };
+};
+
+export default useFetch;
+```
+
+```javascript
+// Home.js
+const Home = () => {
+  const {
+    // grab the data but call it blogs instead
+    data: blogs,
+    isPending,
+    error,
+  } = useFetch("http://localhost:8000/blogs");
+
+  return (
+    <div className="home">
+      {error && <div>{error}</div>}
+      {isPending && <div>Loading...</div>}
+      {blogs && <BlogList blogs={blogs} title="All Blogs" />}
+    </div>
+  );
+};
+```
+
+# React Router
+
+- Normal webpages when going to a new page send request to a server and get the code back
+- In React SPA initially all the js bundle is sent and when a new request is made to a page ReactDOM updates the dom accordingly
+- Install using
+
+```
+npm install react-router-dom
+```
+
+- Enclose the main App component inside a Router and then define the Routes
+  - Inside Routes define different Route which have different path which display different componentes
+
+![](diagrams/reactjs/routertypes.png)
+
+```javascript
+// App.js
+import Navbar from "./Navbar";
+import Home from "./Home";
+// This is different from v5 react-router-dom
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        {/* The NavBar will always show since it is not inside the Routes */}
+        <Navbar />
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/create" element={<Create />} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+- For mulitple routes in older versions needed to pass in `exact` keyword if we want react to look at the exact url and not go to the first url it finds
+
+  - ex. if 1st route -> `/` & 2nd route -> `/create` react will just go straight to the 1st route since it used to do a partial match only.
+
+- New versions do the exact path straight away without mentioning it
+- If want to go to a child url can use `path='/users/*` if want the old behaviour
+
+## Route Links
+
+- Using anchor tags `<a>` is a bad idea
+  ![](./diagrams/reactjs/whyanchortagsbad.png)
+- Can use `Link` component instead from the react-router packages
+- Uses to as a attribute
+- In the html they are still an anchor tag but a new request is not sent to the server
+
+```javascript
+import { Link } from "react-router-dom";
+// this is a stateless functional component
+const Navbar = () => {
+  return (
+    <nav className="navbar">
+      <h1>The Dojo Blog</h1>
+      <div className="links">
+        <Link to="/">Home</Link>
+        <Link to="/create">New Blog</Link>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
+```
+
+## useEffect Cleanup
+
+- When a fetch request using our useFetch request has been made and the state hasn't been updated till yet/request has not been completed and we change the page while the request was still in process and the main component gets unmounted so can't make the state changes
+
+  - need to stop that request from being made
+
+- Can use a `AbortController`
+
+```javascript
+// useFetch hook
+import { useState, useEffect } from "react";
+
+// this hooks does is to declare initial state and whenever the url updates it sets the state to the new one
+const useFetch = (url) => {
+  const [data, setData] = useState(null);
+  const [isPending, setIsPending] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // DEFINE A ABORTCONTROLLER HERE
+    const abortController = new AbortController();
+
+    setTimeout(() => {
+      // PASS IT ALONG THE FETCH AS SIGNAL PROPERTY
+      fetch(url, { signal: abortController.signal })
+        .then((res) => {
+          if (!res.ok) {
+            throw Error("Could not fetch the data for that resource");
+          }
+          return res.json();
+        })
+        .then((data) => {
+          setData(data);
+          setIsPending(false);
+          setError(null);
+        })
+        .catch((err) => {
+          // if we set the error state then the same problem will be there
+          // just check for AbortError and other errors seperately
+          if (err.name === "AbortError") {
+            console.log("fetch Aborted");
+          } else {
+            setIsPending(false);
+            setError(err.message);
+          }
+        });
+    }, 500);
+
+    // THIS IS WHERE THE USEEFFECT CLEANUP FUNCTION IS
+    // RETURN THIS ON CLEANUP / WHEN THE COMPONENT GETS UNMOUNTED
+    return () => abortController.abort();
+  }, [url]);
+
+  return { data, isPending, error };
+};
+
+export default useFetch;
+```
+
+## Route Parameters
+
+- To get access to route parameters like id in `blogs/:id` can use the `useParams` hook
+
+```javascript
+import { useParams } from "react-router-dom";
+
+const BlogDetails = () => {
+  // just destructure whatever it is named in the Route parameter definition
+  const { id } = useParams();
+
+  return (
+    <div className="blog-details">
+      <h2>Blog details - {id}</h2>
+    </div>
+  );
+};
+
+export default BlogDetails;
+```
+
+# Forms in React & Controlled Inputs
+
+## Controlled Inputs
+
+- When adding something to a input field we want to udpate the state as well with every change we can use controlled inputs in that case.
+
+```jsx
+// Create.js
+// Contains a form with input elements
+import { useState } from "react";
+
+const Create = () => {
+  // initial states for text inputs should be an empty string
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [author, setAuthor] = useState("person1");
+
+  return (
+    <div className="create">
+      <h2>Add a New Blog</h2>
+      {/* this form right now does not do anything */}
+      <form>
+        <label>Blog title:</label>
+        {/*on any change we will set the value inside the state to be equal to that 
+        e is the event object 
+        target will be the tag
+        and its value will be the text value
+        */}
+        {/*value of this input element will always be equal to the value inside the state*/}
+        <input
+          type="text"
+          required
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <label>Blog body</label>
+        {/*react textarea can change the value */}
+        <textarea
+          required
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+        ></textarea>
+        <label>Blog author</label>
+        <select value={author} onChange={(e) => setAuthor(e.target.value)}>
+          <option value="person1">Person 1</option>
+          <option value="person2">Person 2</option>
+        </select>
+        <button>Add Blog</button>
+        <p>{title}</p>
+        <p>{body}</p>
+        <p>{author}</p>
+      </form>
+    </div>
+  );
+};
+
+export default Create;
+```
+
+## Submiting forms
+
+- Normally like vanilla javascript just add a onSubmit handler to the form and prevent default action of a post request
+
+```javascript
+import { useState } from "react";
+import axios from "axios";
+
+const Create = () => {
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [author, setAuthor] = useState("person1");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const blog = { title, body, author };
+    await axios.post("http://localhost:8000/blogs", blog);
+    // USING FETCH API
+    // fetch("http://localhost:8000/blogs", {
+    //   // json server will add the id property for us
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(blog),
+    // }).then(() => console.log("new blog added"));
+  };
+
+  return (
+    <div className="create">
+      <h2>Add a New Blog</h2>
+      <form onSubmit={handleSubmit}>
+        <label>Blog title:</label>
+        <input
+          type="text"
+          required
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <label>Blog body</label>
+        <textarea
+          required
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+        ></textarea>
+        <label>Blog author</label>
+        <select value={author} onChange={(e) => setAuthor(e.target.value)}>
+          <option value="person1">Person 1</option>
+          <option value="person2">Person 2</option>
+        </select>
+        <button>Add Blog</button>
+      </form>
+    </div>
+  );
+};
+
+export default Create;
+```
+
+## Programming Redirect
+
+- Use the `useNavigate` hook to navigate to another page after doing some task like submitting a form
+- Was called `useHistory` in earlier versions
+  - difference in both
+- Pass in the path to navigate function
+  - Passing in -1 will go back 1 page
+
+```javascript
+import { useState } from "react";
+import {useNavigate} from 'react-router-dom';
+import axios from "axios";
+
+const Create = () => {
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [author, setAuthor] = useState("person1");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const blog = { title, body, author };
+
+    await axios.post("http://localhost:8000/blogs", blog);
+
+    // after submitting navigate to the home page
+    navigate('/');
+
+  };
+
+  return(
+    // something
+  )
+}
+```
+
+# 404 Pages
+
+- This is like a catch all page if user goes to any url that is not defined in the routes
+- Add a new Route inside Router with a path to \* and place it at the end
+
+```javascript
+// App.js
+import Navbar from "./Navbar";
+import Home from "./Home";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Create from "./Create";
+import BlogDetails from "./BlogDetails";
+import NotFound from "./NotFound";
+
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        {/* The NavBar will always show since it is not inside the Routes */}
+        <Navbar />
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/create" element={<Create />} />
+            <Route path="/blogs/:id" element={<BlogDetails />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
+```
