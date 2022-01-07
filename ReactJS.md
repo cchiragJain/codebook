@@ -25,6 +25,17 @@
   - [Submiting forms](#submiting-forms)
   - [Programming Redirect](#programming-redirect)
 - [404 Pages](#404-pages)
+- [Hooks Detailed](#hooks-detailed)
+  - [useState](#usestate)
+  - [useEffect](#useeffect)
+  - [useMemo](#usememo)
+  - [useRef](#useref)
+  - [Context API & useContext](#context-api--usecontext)
+- [Redux](#redux)
+  - [Setting action, reducers only using redux](#setting-action-reducers-only-using-redux)
+  - [Using react-redux](#using-react-redux)
+
+**These notes don't cover class based components and only use hooks & functional components**
 
 # Introduction
 
@@ -907,4 +918,496 @@ function App() {
 }
 
 export default App;
+```
+
+# Hooks Detailed
+
+## useState
+
+- If want to change the state based on previous state can pass in function inside the setState function as well
+
+```javascript
+function App() {
+  const [count, setCount] = useState(3);
+
+  // rather than just setting the state will update it now using the previous one
+  function decrementCount() {
+    setCount((prevCount) => prevCount - 1);
+  }
+
+  function incrementCount() {
+    setCount((prevCount) => prevCount + 1);
+  }
+}
+```
+
+## useEffect
+
+- Same as above
+- Can also be used to add event Listeners to some elements on mounting of a component ex. the window
+
+## useMemo
+
+- There are a lot of functions that may take a lot of time but give out the same output for the same input on every re-render
+- `useMemo()`is a built-in React hook that accepts 2 arguments — a function compute that computes a result and the depedencies array:
+
+```javascript
+const memoizedResult = useMemo(compute, dependencies);
+```
+
+- During initial rendering, useMemo(compute, dependencies) invokes compute, memoizes the calculation result, and returns it to the component.
+
+- If during next renderings the dependencies don't change, then useMemo() doesn't invoke compute but returns the memoized value.
+
+- But if dependencies change during re-rendering, then useMemo() invokes compute, memoizes the new value, and returns it.
+
+```javascript
+// inside a component
+const doubleNumber = useMemo(() => {
+  return slowFunction(number);
+  // this also uses a dependency array like useEffect
+  // will only run this again if number changes
+}, [number]);
+```
+
+## useRef
+
+- We can't do something like telling how many times a component has rendered using `useState` and `useEffect` since that would lead to infinite loop
+- ex. **THIS WILL LEAD TO INFINITE LOOP**
+
+```javascript
+import { useState, useEffect } from "react";
+
+function App() {
+  const [name, setName] = useState("");
+  const [renderCount, setRenderCount] = useState(0);
+
+  useEffect(() => {
+    setRenderCount((prevRenderCount) => prevRenderCount + 1);
+  });
+
+  return (
+    <div>
+      <input value={name} onChange={(e) => setName(e.target.value)} />
+      <div>My name is {name}</div>
+      <div>I rendered {renderCount} times</div>
+    </div>
+  );
+}
+
+export default App;
+```
+
+- Better way would be to use `useRef` hook
+- Only has the current property inside it
+
+```javascript
+const renderCount = useRef(0);
+useEffect(() => {
+  renderCount.current = renderCount.current + 1;
+});
+return (
+  <div>
+    <input value={name} onChange={(e) => setName(e.target.value)} />
+    <div>My name is {name}</div>
+    <div>I rendered {renderCount.current} times</div>
+  </div>
+);
+```
+
+- **Can also add references for elements and then do lets say add focus on a text input**
+
+```javascript
+const inputRef = useRef();
+
+function focus(){
+  // HTMLElement.focus()
+  inputRef.current.focus();
+}
+
+<input ref={inputRef}/>
+<button onClick={focus}>Focus on input field</button>
+```
+
+## Context API & useContext
+
+- Context API in react provides a way to pass down data through the components without having to pass props through all the nested components.
+  - ex. each component needs to know the current user selected theme but passing it everytime as prop will not be a good idea
+- Setting event binding for ex. deleting something from the state 50 components deep is not a good idea using normal methods like passing down props.
+
+- ex. Using context api to pass a list of movies to a Nav component to list size of movies and to a AddMovie component to add movies to the list.
+
+- Creating a context ( refer comments for explanation )
+
+```javascript
+// MovieContext.js
+import { useState, createContext } from "react";
+
+// The way it is all going to work is whenever we need the movie list from the MovieProvider we just use the MovieContext
+
+// creating a movie context same name as file name
+export const MovieContext = createContext();
+
+// this is the context provider
+// provide the information
+export const MovieProvider = (props) => {
+  const [movies, setMovies] = useState([
+    {
+      name: "movie 1",
+      price: "10",
+      id: 232,
+    },
+    {
+      name: "movie 2",
+      price: "20",
+      id: 233,
+    },
+    {
+      name: "movie 3",
+      price: "30",
+      id: 234,
+    },
+    {
+      name: "movie 4",
+      price: "40",
+      id: 235,
+    },
+  ]);
+  return (
+    // pass everything that we want to access as a array to the value property
+    <MovieContext.Provider value={[movies, setMovies]}>
+      {/* will pass it down to all the different components inside it*/}
+      {props.children}
+    </MovieContext.Provider>
+  );
+};
+```
+
+- Passing the data to other components inside the main App.js file
+
+```javascript
+// App.js
+import "./App.css";
+import { MovieProvider } from "./MovieContext";
+import MovieList from "./MovieList";
+import AddMovie from "./AddMovie";
+import Nav from "./Nav";
+
+function App() {
+  return (
+    // just wrap all the components that we want to pass the state down to inside the MovieProvider
+    <MovieProvider>
+      <div className="App">
+        <Nav />
+        <AddMovie />
+        <MovieList />
+      </div>
+    </MovieProvider>
+  );
+}
+
+export default App;
+```
+
+- Using the data from the Context
+
+```javascript
+import { useContext } from "react";
+// import the context
+import { MovieContext } from "./MovieContext";
+
+const Nav = () => {
+  // using the context
+  const [movies, setMovies] = useContext(MovieContext);
+  return (
+    <div>
+      <h3>Chirag Jain</h3>
+      {/*available to this component now*/}
+      <p>Number of Movies : {movies.length}</p>
+    </div>
+  );
+};
+
+export default Nav;
+```
+
+- Updating the data of a context
+
+```javascript
+import { useState, useContext } from "react";
+import { MovieContext } from "./MovieContext";
+
+const AddMovie = () => {
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [movies, setMovies] = useContext(MovieContext);
+
+  const addMovie = (e) => {
+    e.preventDefault();
+    // take the prevMovies destructure them add the new movie to the array and set it as the new one
+    setMovies((prevMovies) => [
+      ...prevMovies,
+      // id is required for react lists to work
+      { name, price, id: Math.random() * 1000 },
+    ]);
+  };
+
+  return (
+    <form onSubmit={addMovie}>
+      <input
+        type="text"
+        name="name"
+        placeholder="Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+      <input
+        type="text"
+        name="price"
+        placeholder="Price"
+        value={price}
+        onChange={(e) => setPrice(e.target.value)}
+      />
+      <button>Submit</button>
+    </form>
+  );
+};
+
+export default AddMovie;
+```
+
+- **The only problem is that whenever we change something in the state everthing that is using that provider is going to re-render.**
+
+# Redux
+
+- Redux is a state management library for react
+- It holds all the state of the entire app in a **central data source / single source of truth** known as **store**
+- Alternative to using the context API in large applications
+- Individual components can then access the state on their own without having to pass down as props and having to bind functions like delete and such in a parent component
+
+- **STORE ->** GLOBALISED STATE
+- **ACTION ->** describes what you want to do ,doesnt mean you actually do that thing
+- **REDUCER ->** taking in an action and data and then process the action and return it so it can be centrailised
+- **DISPATCH ->** dispatch this action to the reducer and then the reducer checks what to do and then the store gets updated
+
+## Setting action, reducers only using redux
+
+```javascript
+// this is the main index.js file
+import React, { createElement } from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import "./index.css";
+import { createStore } from "redux";
+
+// ACTIONS
+const increment = () => {
+  return {
+    // type is just like the name of the action
+    type: "INCREMENT",
+  };
+};
+
+const decrement = () => {
+  return {
+    type: "DECREMENT",
+  };
+};
+
+// REDUCER
+const counter = (state = 0, action) => {
+  // based on the action type that we get it's going to return a piece of state
+  switch (action.type) {
+    case "INCREMENT":
+      return state + 1;
+    case "DECREMENT":
+      return state - 1;
+  }
+};
+
+// create a store/global state that holds our reducer
+let store = createStore(counter);
+
+// display it in the console
+store.subscribe(() => console.log(store.getState()));
+
+// DISPATCH
+store.dispatch(increment());
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+```
+
+## Using react-redux
+
+![](./diagrams/reactjs/reduxfilestructure.png)
+
+- Simple code to illustrate two state (counter,isLogged) present inside a redux store.
+- Refer this code or inside the practice-codebook/react/redux folder on desktop
+- index.js file setup for redux
+
+```javascript
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import "./index.css";
+import { createStore } from "redux";
+import allReducers from "./reducers/index";
+import { Provider } from "react-redux";
+
+const store = createStore(
+  // second argument is for redux dev tools extension to work
+  allReducers,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
+ReactDOM.render(
+  <React.StrictMode>
+    {/* add the provider here and pass it the store */}
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </React.StrictMode>,
+  document.getElementById("root")
+);
+```
+
+- Creating Reducers
+
+```javascript
+// inside the reducers folder
+// this takes the state and depending on the action type that has been dispatched does its thing
+const counterReducer = (state = 0, action) => {
+  switch (action.type) {
+    case "INCREMENT":
+      return state + 1;
+    case "DECREMENT":
+      return state - 1;
+    default:
+      return state;
+  }
+};
+
+// export it
+export default counterReducer;
+```
+
+```javascript
+const loggedReducer = (state = false, action) => {
+  switch (action.type) {
+    case "SIGN_IN":
+      return !state;
+    default:
+      return state;
+  }
+};
+
+export default loggedReducer;
+```
+
+- reducers/index.js file to combine all the reducers
+
+```javascript
+import counterReducer from "./counter";
+import loggedReducer from "./isLogged";
+import { combineReducers } from "redux";
+
+const allReducers = combineReducers({
+  counter: counterReducer,
+  isLogged: loggedReducer,
+});
+
+export default allReducers;
+```
+
+- Creating actions
+- Do seperate exports since need to use multiple things in diff files
+
+```javascript
+// actions/index.js
+export const increment = () => {
+  return {
+    type: "INCREMENT",
+  };
+};
+
+export const decrement = () => {
+  return {
+    type: "DECREMENT",
+  };
+};
+
+export const signin = () => {
+  return {
+    type: "SIGN_IN",
+  };
+};
+```
+
+- Using them inside the main file or other files
+
+```javascript
+// App.js
+import { useSelector, useDispatch } from "react-redux";
+import { increment, decrement, signin } from "./actions/index";
+
+function App() {
+  // useSelector is just a hook that gives access to the entire redux store state
+  const counter = useSelector((state) => state.counter);
+  const isLogged = useSelector((state) => state.isLogged);
+  // useDispatch is the hook to use for dispatching
+  const dispatch = useDispatch();
+
+  return (
+    <div className="App">
+      <h1>Counter : {counter}</h1>
+      {/*on clicking the button dispatch this action which fed to the reducer and based on the type of action changes the central state */}
+      <button onClick={() => dispatch(increment())}>+</button>
+      <button onClick={() => dispatch(decrement())}>-</button>
+      <button onClick={() => dispatch(signin())}>Sign In</button>
+      {isLogged && (
+        <p>
+          Some information that should only be seen if the user if logged in
+        </p>
+      )}
+    </div>
+  );
+}
+
+export default App;
+```
+
+- If want to pass a value to the action when dispatching like `dispatch(increment(5))` while defining what the action does pass in the data as a payload property and then in the reducer access it using `action.payload`
+
+```javascript
+// actions
+export const increment = (number) => {
+  return {
+    type: "INCREMENT",
+    // pass it like this
+    // generally called payload
+    payload: number,
+  };
+};
+```
+
+```javascript
+// reducer
+const counterReducer = (state = 0, action) => {
+  switch (action.type) {
+    case "INCREMENT":
+      // can access the payload here
+      return state + action.payload;
+    case "DECREMENT":
+      return state - 1;
+    default:
+      return state;
+  }
+};
+
+export default counterReducer;
 ```
