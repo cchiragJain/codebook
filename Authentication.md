@@ -1,12 +1,13 @@
-# Authentication and Authorization
+# Authentication
 
-- [Authentication and Authorization](#authentication-and-authorization)
+- [Authentication](#authentication)
   - [Cookies](#cookies)
     - [Setting a cookie in express](#setting-a-cookie-in-express)
     - [Getting a cookie](#getting-a-cookie)
     - [Signing cookies](#signing-cookies)
   - [Authentication vs Authorization](#authentication-vs-authorization)
     - [How to store passwords](#how-to-store-passwords)
+      - [Salting the passwords](#salting-the-passwords)
 
 ## Cookies
 
@@ -64,7 +65,7 @@ app.listen(3000);
 ### Signing cookies
 
 - Signing something in digital terms means adding a cryptographic signature so that we can verify if it comes from the original source
-- It does not mean encrypting the data
+- It **does not** mean encrypting the data
 
 ```javascript
 const express = require("express");
@@ -108,4 +109,13 @@ app.listen(3000, () => {
 
 - **Never store passwords as plain text**
 - Rather than storing a password in the database, we run the password through a **hashing function** first and then store the result in the database.
--
+  - **Hashing Functions** -> take input data of any size and map it to fixed-size output values.
+  - A small change in the input value changes the output drastically so unlikely to find two same outputs
+  - It's a one way function
+- When a user enters username & password we send that data to the server hash our plain text password using the same hash function compare it to the one stored in the database if same login user if false then incorrect
+  ![](./diagrams/authentication/storingpasswords.png)
+
+#### Salting the passwords
+
+- A salt is a random value added to the password before we hash it.
+- It ensures unique hashes since for each password if we add a random thing(salt) to it and then hash it there is no way to reverse engineer the original password say using a lookup table.
