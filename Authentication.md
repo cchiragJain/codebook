@@ -8,6 +8,7 @@
   - [Authentication vs Authorization](#authentication-vs-authorization)
     - [How to store passwords](#how-to-store-passwords)
       - [Salting the passwords](#salting-the-passwords)
+  - [Using Bcrypt To Authenticate](#using-bcrypt-to-authenticate)
 
 ## Cookies
 
@@ -119,3 +120,43 @@ app.listen(3000, () => {
 
 - A salt is a random value added to the password before we hash it.
 - It ensures unique hashes since for each password if we add a random thing(salt) to it and then hash it there is no way to reverse engineer the original password say using a lookup table.
+
+## Using Bcrypt To Authenticate
+
+- Bcrypt is the library we use to do the hashing.
+
+```
+npm i bcrypt
+```
+
+```javascript
+const bcrypt = require("bcrypt");
+
+const hashPassword = async (password) => {
+  // creates salt with 10 rounds
+  // the higher the rounds more time is going to take while hashing the function
+  // recommended 12
+  const salt = await bcrypt.genSalt(10);
+  const hash = await bcrypt.hash(password, salt);
+  console.log(salt);
+  console.log(hash);
+};
+
+hashPassword("123456");
+```
+
+```javascript
+// assume password comes from a login form and hashedPassword is stored in some db
+const login = async (password, hashedPassword) => {
+  const result = await bcrypt.compare(password, hashedPassword);
+
+  if (result) {
+    console.log("logged you in succesfully");
+  } else {
+    console.log("wrong password");
+  }
+};
+
+// bcrypt.compare will take the salt from this hashedpassword only hashes it with 123456 and then compares the result
+login("123456", "$2b$10$Z.gQSSnlbqROdE8WBwlcq.6v0MlAVpMr36BXWg3lQMn.krn.JBmbC");
+```
