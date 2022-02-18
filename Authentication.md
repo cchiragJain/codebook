@@ -6,6 +6,7 @@
     - [Getting a cookie](#getting-a-cookie)
     - [Signing cookies](#signing-cookies)
   - [Authentication vs Authorization](#authentication-vs-authorization)
+    - [Session based vs JWT based authentication](#session-based-vs-jwt-based-authentication)
     - [How to store passwords](#how-to-store-passwords)
       - [Salting the passwords](#salting-the-passwords)
   - [Using Bcrypt To Authenticate](#using-bcrypt-to-authenticate)
@@ -106,6 +107,10 @@ app.listen(3000, () => {
 - **Authentication ->** the process of verifying who a particular user is ex. by using a email password combo
 - **Authorization ->** What a specific user has access to. Generally, We authorize user after they have been authenticated
 
+### Session based vs JWT based authentication
+
+![](./diagrams/authentication/sessionvsjwt.png)
+f
 ### How to store passwords
 
 - **Never store passwords as plain text**
