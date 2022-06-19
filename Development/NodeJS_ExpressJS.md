@@ -51,6 +51,8 @@
 - [MVC](#mvc)
   - [Controllers](#controllers)
 
+**Also refer the [mern-ecommerce project](https://github.com/cchiragJain/mern-ecommerce) for a better understanding of how to create and work with REST API's**
+
 # Introduction
 
 -   Node allows us to run javascript code on to the server/directly on computers using the V8 engine.
