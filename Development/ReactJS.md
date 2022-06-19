@@ -58,7 +58,7 @@ npx create-react-app myapp
 - Component written using `jsx`
 - A normal template function name should be capital also need to export it to the index.js file.
 
-```javascript
+```jsx
 // app.js file
 import "./App.css";
 
@@ -78,7 +78,7 @@ function App() {
 export default App;
 ```
 
-```javascript
+```jsx
 // index.js
 import React from "react";
 import ReactDOM from "react-dom";
@@ -98,7 +98,7 @@ ReactDOM.render(
 
 - Can output any value inside curly braces `{}` except for objects and boolean values.
 
-```javascript
+```jsx
 function App() {
   const title = "Welcome to the new blog";
   const link = "http://www.google.com";
@@ -121,7 +121,7 @@ function App() {
 - Type `sfc` for the snippet to work for a stateless functional component
 - Make sure to export component at the end.
 
-```javascript
+```jsx
 // NavBar.js
 // this is a stateless functional component
 const Navbar = () => {
@@ -141,7 +141,7 @@ export default Navbar;
 
 - Can now add the Navbar component in the main App component
 
-```javascript
+```jsx
 import Navbar from "./Navbar";
 import Home from "./Home";
 // App.js
@@ -169,7 +169,7 @@ function App() {
 
 - To do inline styling need to use double curly braces one to tell it is javascript and other for object itself
 
-```javascript
+```jsx
 <a href="/create" style={{
     color: "white",
     backgroundColor: "#f1356d",
@@ -182,7 +182,7 @@ function App() {
 
 - When assigning reference don't invoke the function since then it will just run
 
-```javascript
+```jsx
 const Home = () => {
   const handleClick = () => {
     console.log("hello there");
@@ -199,7 +199,7 @@ const Home = () => {
 
 - If want to pass value need to declare an anonymous function first which then calls the main function since anonymous function gets called when the event happens which in turn calls the main event function
 
-```javascript
+```jsx
 const Home = () => {
   const handleClick = (name) => {
     console.log(name));
@@ -216,7 +216,7 @@ const Home = () => {
 
 - The event object gets passed to the function automatically
 
-```javascript
+```jsx
 const Home = () => {
   const handleClick = (event) => {
     console.log(event);
@@ -237,7 +237,7 @@ const Home = () => {
 - Can use the `useState` hook which tells react to watch over the data so that the UI update when the data changes
 - Use `setState` to set the value
 
-```javascript
+```jsx
 const Home = () => {
   // useState returns two things which we are getting by array destructuring
   // first should be the name of the variable and second is the setState function
@@ -265,7 +265,7 @@ const Home = () => {
 
 - Each value in the list needs to have a unique key property of its own so that react can differentiate b/w them
 
-```javascript
+```jsx
 import { useState } from "react";
 
 const Home = () => {
@@ -312,7 +312,7 @@ export default Home;
 
 - Can pass data to child components using props property
 
-```javascript
+```jsx
 // Child of some component
 // BlogList.js
 
@@ -338,7 +338,7 @@ export default BlogList;
 
 - Passed it using
 
-```javascript
+```jsx
 // parent component
 return (
   <div className="home">
@@ -350,7 +350,7 @@ return (
 
 - Can use multiple components as well and pass them diff props
 
-```javascript
+```jsx
 return (
   <div className="home">
     <BlogList blogs={blogs} title="All Blogs" />
@@ -367,7 +367,7 @@ return (
 - We can't access the original state in a child component through the props and the state will only be available in the parent component.
 - Ex. say to delete something from the state we can declare the function in the parent component and pass that function reference as a prop to the child component which can call it using that reference
 
-```javascript
+```jsx
 // parent
 const handleDelete = (id) => {
   const newBlogs = blogs.filter((blog) => blog.id !== id);
@@ -381,7 +381,7 @@ return (
 );
 ```
 
-```javascript
+```jsx
 // child
 const BlogList = ({ blogs, title, handleDelete }) => {
   return (
@@ -411,7 +411,7 @@ const BlogList = ({ blogs, title, handleDelete }) => {
 
 - If we want that useEffect should only run if a certain state changes we can pass it to the _dependency array_
 
-```javascript
+```jsx
 useEffect(() => {
   console.log("use effect run");
 }, [name]);
@@ -420,7 +420,7 @@ useEffect(() => {
 - Will only run if there is a change in state of name.
 - Passing an empty array will make sure that it runs only once at the starting so can change state in that case
 
-```javascript
+```jsx
 useEffect(() => {
   console.log("use effect run only at the start");
 }, []);
@@ -431,7 +431,7 @@ useEffect(() => {
 - Can't make the useEffect callback function async need to use a `.then` to resolve promises inside it
 - If want to use `async-await` syntax declare a seperate function and call it from the useEffect hook
 
-```javascript
+```jsx
 useEffect(() => {
   axios
     .get("http://localhost:8000/blogs")
@@ -450,7 +450,7 @@ useEffect(() => {
 
 - _If state is initially null and our request from useEffect hook will take some time then we need to use conditional render using `&&` operator_ ex.
 
-```javascript
+```jsx
 const [blogs, setBlogs] = useState(null);
 useEffect(() => {
   // gets some data
@@ -470,7 +470,7 @@ return (
 
 - If we get errors while making a request we can throw it and then catch it inside of then-catch statements and output that error by storing it inside state.
 
-```javascript
+```jsx
 // this is what the file looks till now
 //
 import { useState, useEffect } from "react";
@@ -518,7 +518,7 @@ export default Home;
 - Custom hooks need to start with the `use` keyword otherwise won't work
 - ex. converting above fetch function to a hook which takes in a url and has a dependency on it
 
-```javascript
+```jsx
 //useFetch.js
 import { useState, useEffect } from "react";
 
@@ -557,7 +557,7 @@ const useFetch = (url) => {
 export default useFetch;
 ```
 
-```javascript
+```jsx
 // Home.js
 const Home = () => {
   const {
@@ -592,7 +592,7 @@ npm install react-router-dom
 
 ![](diagrams/reactjs/routertypes.png)
 
-```javascript
+```jsx
 // App.js
 import Navbar from "./Navbar";
 import Home from "./Home";
@@ -634,7 +634,7 @@ export default App;
 - Uses to as a attribute
 - In the html they are still an anchor tag but a new request is not sent to the server
 
-```javascript
+```jsx
 import { Link } from "react-router-dom";
 // this is a stateless functional component
 const Navbar = () => {
@@ -660,7 +660,7 @@ export default Navbar;
 
 - Can use a `AbortController`
 
-```javascript
+```jsx
 // useFetch hook
 import { useState, useEffect } from "react";
 
@@ -715,7 +715,7 @@ export default useFetch;
 
 - To get access to route parameters like id in `blogs/:id` can use the `useParams` hook
 
-```javascript
+```jsx
 import { useParams } from "react-router-dom";
 
 const BlogDetails = () => {
@@ -795,7 +795,7 @@ export default Create;
 
 - Normally like vanilla javascript just add a onSubmit handler to the form and prevent default action of a post request
 
-```javascript
+```jsx
 import { useState } from "react";
 import axios from "axios";
 
@@ -856,7 +856,7 @@ export default Create;
 - Pass in the path to navigate function
   - Passing in -1 will go back 1 page
 
-```javascript
+```jsx
 import { useState } from "react";
 import {useNavigate} from 'react-router-dom';
 import axios from "axios";
@@ -889,7 +889,7 @@ const Create = () => {
 - This is like a catch all page if user goes to any url that is not defined in the routes
 - Add a new Route inside Router with a path to \* and place it at the end
 
-```javascript
+```jsx
 // App.js
 import Navbar from "./Navbar";
 import Home from "./Home";
@@ -926,7 +926,7 @@ export default App;
 
 - If want to change the state based on previous state can pass in function inside the setState function as well
 
-```javascript
+```jsx
 function App() {
   const [count, setCount] = useState(3);
 
@@ -951,7 +951,7 @@ function App() {
 - There are a lot of functions that may take a lot of time but give out the same output for the same input on every re-render
 - `useMemo()`is a built-in React hook that accepts 2 arguments — a function compute that computes a result and the depedencies array:
 
-```javascript
+```jsx
 const memoizedResult = useMemo(compute, dependencies);
 ```
 
@@ -961,7 +961,7 @@ const memoizedResult = useMemo(compute, dependencies);
 
 - But if dependencies change during re-rendering, then useMemo() invokes compute, memoizes the new value, and returns it.
 
-```javascript
+```jsx
 // inside a component
 const doubleNumber = useMemo(() => {
   return slowFunction(number);
@@ -975,7 +975,7 @@ const doubleNumber = useMemo(() => {
 - We can't do something like telling how many times a component has rendered using `useState` and `useEffect` since that would lead to infinite loop
 - ex. **THIS WILL LEAD TO INFINITE LOOP**
 
-```javascript
+```jsx
 import { useState, useEffect } from "react";
 
 function App() {
@@ -1001,7 +1001,7 @@ export default App;
 - Better way would be to use `useRef` hook
 - Only has the current property inside it
 
-```javascript
+```jsx
 const renderCount = useRef(0);
 useEffect(() => {
   renderCount.current = renderCount.current + 1;
@@ -1017,7 +1017,7 @@ return (
 
 - **Can also add references for elements and then do lets say add focus on a text input**
 
-```javascript
+```jsx
 const inputRef = useRef();
 
 function focus(){
@@ -1039,7 +1039,7 @@ function focus(){
 
 - Creating a context ( refer comments for explanation )
 
-```javascript
+```jsx
 // MovieContext.js
 import { useState, createContext } from "react";
 
@@ -1085,7 +1085,7 @@ export const MovieProvider = (props) => {
 
 - Passing the data to other components inside the main App.js file
 
-```javascript
+```jsx
 // App.js
 import "./App.css";
 import { MovieProvider } from "./MovieContext";
@@ -1111,7 +1111,7 @@ export default App;
 
 - Using the data from the Context
 
-```javascript
+```jsx
 import { useContext } from "react";
 // import the context
 import { MovieContext } from "./MovieContext";
@@ -1133,7 +1133,7 @@ export default Nav;
 
 - Updating the data of a context
 
-```javascript
+```jsx
 import { useState, useContext } from "react";
 import { MovieContext } from "./MovieContext";
 
@@ -1192,7 +1192,7 @@ export default AddMovie;
 
 ## Setting action, reducers only using redux
 
-```javascript
+```jsx
 // this is the main index.js file
 import React, { createElement } from "react";
 import ReactDOM from "react-dom";
@@ -1250,7 +1250,7 @@ ReactDOM.render(
 - Refer this code or inside the practice-codebook/react/redux folder on desktop
 - index.js file setup for redux
 
-```javascript
+```jsx
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
@@ -1278,7 +1278,7 @@ ReactDOM.render(
 
 - Creating Reducers
 
-```javascript
+```jsx
 // inside the reducers folder
 // this takes the state and depending on the action type that has been dispatched does its thing
 const counterReducer = (state = 0, action) => {
@@ -1296,7 +1296,7 @@ const counterReducer = (state = 0, action) => {
 export default counterReducer;
 ```
 
-```javascript
+```jsx
 const loggedReducer = (state = false, action) => {
   switch (action.type) {
     case "SIGN_IN":
@@ -1311,7 +1311,7 @@ export default loggedReducer;
 
 - reducers/index.js file to combine all the reducers
 
-```javascript
+```jsx
 import counterReducer from "./counter";
 import loggedReducer from "./isLogged";
 import { combineReducers } from "redux";
@@ -1327,7 +1327,7 @@ export default allReducers;
 - Creating actions
 - Do seperate exports since need to use multiple things in diff files
 
-```javascript
+```jsx
 // actions/index.js
 export const increment = () => {
   return {
@@ -1350,7 +1350,7 @@ export const signin = () => {
 
 - Using them inside the main file or other files
 
-```javascript
+```jsx
 // App.js
 import { useSelector, useDispatch } from "react-redux";
 import { increment, decrement, signin } from "./actions/index";
@@ -1383,7 +1383,7 @@ export default App;
 
 - If want to pass a value to the action when dispatching like `dispatch(increment(5))` while defining what the action does pass in the data as a payload property and then in the reducer access it using `action.payload`
 
-```javascript
+```jsx
 // actions
 export const increment = (number) => {
   return {
@@ -1395,7 +1395,7 @@ export const increment = (number) => {
 };
 ```
 
-```javascript
+```jsx
 // reducer
 const counterReducer = (state = 0, action) => {
   switch (action.type) {
