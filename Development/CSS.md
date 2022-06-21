@@ -1,3 +1,14 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [CSS Selectors](#css-selectors)
+  - [Tag, Class & Id Selectors](#tag-class--id-selectors)
+  - [Pseudo Selectors](#pseudo-selectors)
+- [FlexBox](#flexbox)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # CSS Selectors
 
 - Used [web dev simplified](https:www.youtube.com/watch?v=l1mER1bV0N0&t=22s) video on css selectors

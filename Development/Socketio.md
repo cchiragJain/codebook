@@ -1,3 +1,14 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [WebSockets](#websockets)
+  - [Using Socket.io](#using-socketio)
+  - [Emitting](#emitting)
+  - [Broadcasting](#broadcasting)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 - [WebSockets](#websockets)
   - [Using Socket.io](#using-socketio)
   - [Emitting](#emitting)

@@ -1,3 +1,37 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Functions](#functions)
+  - [Normal functions](#normal-functions)
+  - [Function expressions](#function-expressions)
+  - [Arrow Functions](#arrow-functions)
+    - [Using arrow functions as callback function](#using-arrow-functions-as-callback-function)
+- [Objects](#objects)
+  - [Object literal](#object-literal)
+  - [This keyword](#this-keyword)
+    - [This and arrow functions](#this-and-arrow-functions)
+- [Document Object Model (DOM)](#document-object-model-dom)
+  - [Change class using JS](#change-class-using-js)
+- [Event Listeners](#event-listeners)
+  - [Event with the this keyword](#event-with-the-this-keyword)
+  - [Event Object](#event-object)
+  - [Event prevent Default](#event-prevent-default)
+  - [Event Bubbling](#event-bubbling)
+- [Asynchronous JavaScript](#asynchronous-javascript)
+  - [HTTP Requests](#http-requests)
+  - [Callback functions](#callback-functions)
+  - [JSON Data](#json-data)
+  - [Callback hell](#callback-hell)
+  - [Promises](#promises)
+    - [Promises Example](#promises-example)
+    - [Chaining Promises](#chaining-promises)
+  - [Fetch API](#fetch-api)
+  - [Async & Await](#async--await)
+  - [Axios](#axios)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 - [Functions](#functions)
   - [Normal functions](#normal-functions)
   - [Function expressions](#function-expressions)
