@@ -623,7 +623,7 @@ app.get("/", (req, res) => {
 
 -   To access it inside a ejs file
 
-```
+```ejs
 <div class="blogs content">
   <h2>All Blogs</h2>
   <% if(blogs.length> 0){ %>
