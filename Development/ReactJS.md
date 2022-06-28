@@ -1,46 +1,3 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Introduction](#introduction)
-- [Creating a React app](#creating-a-react-app)
-- [Components](#components)
-  - [Dynamic values](#dynamic-values)
-  - [Multiple Components](#multiple-components)
-  - [Styling Components](#styling-components)
-    - [Inline styling](#inline-styling)
-  - [Click Events](#click-events)
-  - [State](#state)
-  - [Outputting lists](#outputting-lists)
-  - [Passing data to components using Props](#passing-data-to-components-using-props)
-    - [Passing functions as props](#passing-functions-as-props)
-- [useEffect Hook](#useeffect-hook)
-  - [Dependency Array of useEffect Hook](#dependency-array-of-useeffect-hook)
-  - [Fetching data](#fetching-data)
-  - [Conditional Template](#conditional-template)
-  - [Fetching errors](#fetching-errors)
-- [Making custom hooks](#making-custom-hooks)
-- [React Router](#react-router)
-  - [Route Links](#route-links)
-  - [useEffect Cleanup](#useeffect-cleanup)
-  - [Route Parameters](#route-parameters)
-- [Forms in React & Controlled Inputs](#forms-in-react--controlled-inputs)
-  - [Controlled Inputs](#controlled-inputs)
-  - [Submiting forms](#submiting-forms)
-  - [Programming Redirect](#programming-redirect)
-- [404 Pages](#404-pages)
-- [Hooks Detailed](#hooks-detailed)
-  - [useState](#usestate)
-  - [useEffect](#useeffect)
-  - [useMemo](#usememo)
-  - [useRef](#useref)
-  - [Context API & useContext](#context-api--usecontext)
-- [Redux](#redux)
-  - [Setting action, reducers only using redux](#setting-action-reducers-only-using-redux)
-  - [Using react-redux](#using-react-redux)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 - [Introduction](#introduction)
 - [Creating a React app](#creating-a-react-app)
 - [Components](#components)
@@ -1416,7 +1373,7 @@ function App() {
         <p>
           Some information that should only be seen if the user if logged in
         </p>
-      )}
+      )}	
     </div>
   );
 }

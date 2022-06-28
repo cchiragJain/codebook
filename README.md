@@ -1,25 +1,15 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [Development](#development)
-- [Interview Prep](#interview-prep)
-  - [Frontend](#frontend)
-  - [Core CS](#core-cs)
-  - [DSA](#dsa)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-**Contains Interview Prep & Software Development Notes**
+**Contains Software Development & Interview Preparation Notes**
 
 ## Development
 
--   [HTML and CSS](./Development/CSS.md)
+-   [CSS](./Development/CSS.md)
 -   [JavaScript](./Development/JavaScript.md)
 -   [Git and Github](./Development/Git.pdf)
 -   [Node and ExpressJS](./Development/Node%20%26%20ExpressJS.md)
 -   [ReactJS](./Development/ReactJS.md)
+-   [MERN Stack](./Development/MERN.md)
 -   [Socket.io](./Development/Socketio.md)
+-   [SQL](./Development/SQL.md)
 
 ## Interview Prep
 
@@ -37,4 +27,20 @@
 -   [Computer Networks](./Interview%20Prep/Core%20CS/Computer%20Networks.md)
 
 ### DSA
+
+-   [Arrays](Interview%20Prep/DSA/Arrays.md)
+-   [String](Interview%20Prep/DSA/String.md)
+-   [Matrix](Interview%20Prep/DSA/Matrix.md)
+-   [Searching & Sorting](Interview%20Prep/DSA/Searching%20&%20Sorting.md)
+-   [Recursion & Backtracking](Interview%20Prep/DSA/Recursion%20&%20Backtracking.md)
+-   [Linked List](Interview%20Prep/DSA/LinkedList.md)
+-   [Stack & Queues](Interview%20Prep/DSA/Stacks%20&%20Queues.md)
+-   [Binary Trees](Interview%20Prep/DSA/Binary%20Trees.md)
+-   [Binary Search Trees](Interview%20Prep/DSA/Binary%20Search%20Trees.md)
+-   [Heap](Interview%20Prep/DSA/Heap.md)
+-   [Greedy](Interview%20Prep/DSA/Greedy.md)
+-   [Graphs](Interview%20Prep/DSA/Graph.md)
+-   [Dynamic Programming](Interview%20Prep/DSA/Dynamic%20Programming.md)
+-   [Trie](Interview%20Prep/DSA/Trie.md)
+-   [Bit Manipulation](Interview%20Prep/DSA/Bit%20Manipulation.md)
 
