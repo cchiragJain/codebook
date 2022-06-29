@@ -1,5 +1,30 @@
 # CSS
 
+- [CSS](#css)
+	- [CSS Selectors](#css-selectors)
+		- [Tag, Class & Id Selectors](#tag-class--id-selectors)
+		- [Pseudo Selectors](#pseudo-selectors)
+	- [Specificity](#specificity)
+	- [Units](#units)
+	- [Box model](#box-model)
+	- [Positions](#positions)
+		- [position: static;](#position-static)
+		- [position: relative;](#position-relative)
+		- [position: fixed;](#position-fixed)
+		- [position: absolute;](#position-absolute)
+		- [position: sticky;](#position-sticky)
+	- [max-width etc.](#max-width-etc)
+		- [min-width](#min-width)
+	- [Media Queries](#media-queries)
+	- [Flexbox](#flexbox)
+		- [flex-direction](#flex-direction)
+		- [flex-wrap](#flex-wrap)
+		- [justify-content](#justify-content)
+		- [align-items](#align-items)
+		- [Center a div](#center-a-div)
+	- [Transitions](#transitions)
+	- [Animations](#animations)
+
 These are just common things and not necessarily covers entire CSS / basics of CSS (like font, background etc.).
 
 ## CSS Selectors
@@ -550,7 +575,7 @@ Add transition only to that element that uses it and not to the one where it hap
 
 ![](CSS.assets/Peek%202022-06-29%2019-01.gif)
 
-- Can also specify multiple properties at the same time
+-   Can also specify multiple properties at the same time
 
     ```css
     .child {
@@ -560,23 +585,23 @@ Add transition only to that element that uses it and not to the one where it hap
     	/* specify the property we want to transition */
     	transition: width 1s, height 1s;
     }
-    
+
     .child:hover {
     	width: 70%;
-        height: 70%;
+    	height: 70%;
     }
     ```
 
-- We can only do these basic steps using css transitions and if say wanted to add steps that would require to use animations properly.
+-   We can only do these basic steps using css transitions and if say wanted to add steps that would require to use animations properly.
 
 ## Animations
 
-- Animation is added to where it happens
+-   Animation is added to where it happens
 
 ```css
 .child:hover {
 	/* forwards means that after my animation 100% keyframe is done keep the property */
-    /* the name can be anything */
+	/* the name can be anything */
 	animation: left-to-right 1s ease-in forwards;
 	/* backward means at 0% keyframe */
 	/* specifying both means will apply both */
@@ -584,7 +609,7 @@ Add transition only to that element that uses it and not to the one where it hap
 
 @keyframes left-to-right {
 	/* at 100 % do this */
-    100% {
+	100% {
 		transform: translateX(100%);
 	}
 }
@@ -610,4 +635,3 @@ Add transition only to that element that uses it and not to the one where it hap
 	}
 }
 ```
-
