@@ -1744,4 +1744,3 @@ function customFlat(arr,depth = 1){
 ## Debouncing and Throttling
 
 [Refer This](https://medium.com/nerd-for-tech/debouncing-throttling-in-javascript-d36ace200cea#:~:text=Debouncing%20is%20a%20technique%20where,irrespective%20of%20continuous%20user%20actions)
-

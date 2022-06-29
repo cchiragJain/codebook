@@ -1,9 +1,4 @@
 # CSS Interview Questions
 
-Use this type of syntax and then refer to the notes already made use vscode
-
--   [Selectors](../../Development/ReactJS.md#react-router)
-
-- [Positons]()
-
-- Add how to achive this layout questions as well
+-   Refer to [CSS Notes](../../Development/CSS.md)
+-   Also refer [Interview Bit CSS Questions](https://www.interviewbit.com/css-interview-questions/)

@@ -7,7 +7,7 @@
 -   [Git and Github](./Development/Git.pdf)
 -   [Node and ExpressJS](./Development/Node%20%26%20ExpressJS.md)
 -   [ReactJS](./Development/ReactJS.md)
--   [MERN Stack](./Development/MERN.md)
+-   [MERN Stack](./Development/MERN%20Stack.md)
 -   [Socket.io](./Development/Socketio.md)
 -   [SQL](./Development/SQL.md)
 
@@ -43,4 +43,3 @@
 -   [Dynamic Programming](Interview%20Prep/DSA/Dynamic%20Programming.md)
 -   [Trie](Interview%20Prep/DSA/Trie.md)
 -   [Bit Manipulation](Interview%20Prep/DSA/Bit%20Manipulation.md)
-
