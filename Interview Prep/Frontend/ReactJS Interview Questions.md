@@ -3,16 +3,17 @@
 **[Read this first](../../Development/ReactJS.md)**
 
 - [ReactJS Interview Questions](#reactjs-interview-questions)
-  - [Hooks with examples](#hooks-with-examples)
-    - [useState](#usestate)
-    - [useEffect](#useeffect)
-    - [useRef](#useref)
-      - [Accessing DOM Elements](#accessing-dom-elements)
-    - [useMemo](#usememo)
-    - [Custom Hooks](#custom-hooks)
-  - [Component lifecycle in functional components](#component-lifecycle-in-functional-components)
-  - [Create folder ui structure](#create-folder-ui-structure)
-  - [React Router, Context API, Redux](#react-router-context-api-redux)
+	- [Hooks with examples](#hooks-with-examples)
+		- [useState](#usestate)
+		- [useEffect](#useeffect)
+		- [useRef](#useref)
+			- [Accessing DOM Elements](#accessing-dom-elements)
+		- [useMemo](#usememo)
+		- [Custom Hooks](#custom-hooks)
+	- [Component lifecycle in functional components](#component-lifecycle-in-functional-components)
+	- [Create folder ui structure](#create-folder-ui-structure)
+	- [React Router, Context API, Redux](#react-router-context-api-redux)
+	- [UI Questions](#ui-questions)
 
 ## Hooks with examples
 
@@ -436,3 +437,5 @@ export default Explorer;
 ## React Router, Context API, Redux
 
 Refer notes.
+
+## UI Questions

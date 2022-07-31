@@ -7,6 +7,7 @@
 -   [Git and Github](./Development/Git.pdf)
 -   [Node and ExpressJS](./Development/Node%20%26%20ExpressJS.md)
 -   [ReactJS](./Development/ReactJS.md)
+-   [AngularJS](./Development/AngularJS.md)
 -   [MERN Stack](./Development/MERN%20Stack.md)
 -   [Socket.io](./Development/Socketio.md)
 -   [SQL](./Development/SQL.md)
@@ -21,10 +22,10 @@
 
 ### Core CS
 
--   [OOPS](./Interview%20Prep/Core%20CS/OOPS.md)
--   [Operating Systems](./Interview%20Prep/Core%20CS/Operating%20Systems.md)
--   [Database Management Systems](./Interview%20Prep/Core%20CS/Database%20Management%20Systems.md)
--   [Computer Networks](./Interview%20Prep/Core%20CS/Computer%20Networks.md)
+-   [OOPS](./Interview%20Prep/Core%20CS/OOPS.pdf)
+-   [Operating Systems](./Interview%20Prep/Core%20CS/Operating%20Systems.pdf)
+-   [Database Management Systems](./Interview%20Prep/Core%20CS/Database%20Management%20Systems.pdf)
+-   [Computer Networks](./Interview%20Prep/Core%20CS/Computer%20Networks.pdf)
 
 ### DSA
 

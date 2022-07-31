@@ -32,6 +32,7 @@
     - [Behaviour of fetch (**Microtask Queue?**)](#behaviour-of-fetch-microtask-queue)
     - [setTimeout Issues](#settimeout-issues)
   - [Higher Order functions](#higher-order-functions)
+  - [this Keyword](#this-keyword)
   - [Call, Apply and Bind](#call-apply-and-bind)
   - [Event Bubbling and event capturing](#event-bubbling-and-event-capturing)
   - [Event Delegation](#event-delegation)
@@ -227,10 +228,12 @@ Observe the below examples
 // CASE 1
 function a() {
 	console.log(b); // 10
-	// Instead of printing undefined it prints 10, So somehow this a function could access the variable b outside the function scope.
+	// Instead of printing undefined it prints 10, So somehow this a function could access the variable b outside the function's local scope.
 }
 var b = 10;
 a();
+
+---------------------------------------------------------------------------------------
 
 // CASE 2
 function a() {
@@ -242,6 +245,8 @@ function a() {
 var b = 10;
 a();
 
+---------------------------------------------------------------------------------------
+
 // CASE 3
 function a() {
 	c();
@@ -252,6 +257,8 @@ function a() {
 }
 var b = 10;
 a();
+
+---------------------------------------------------------------------------------------
 
 // CASE 4
 function a() {
@@ -333,10 +340,9 @@ console.log(window.b); // 15
     var a = 100; // this code also rejected upfront as SyntaxError. (can't use same name in same scope)
     ------------------
     var a = 10;
-    var a = 100;
-    // can do this however
+    var a = 100; // can do this however
     ```
-
+    
 -   **Let** is a stricter version of **var**. Now, **const** is even more stricter than **let**.
 
 ```javascript
@@ -616,7 +622,7 @@ let a = 100;
 outest()("Hello There")(); // 10 20 "Hello There"
 ```
 
-**Ans**: Still the same output, the inner function will have reference to inner a, so conflicting name won't matter here. If it wouldn't have find a inside outer function then it would have went more outer to find a and thus have printed 100. So, it try to resolve variable in scope chain and if a wouldn't have been found it would have given reference error.
+**Ans**: Still the same output, the inner function will have reference to inner a, so conflicting name won't matter here. If it wouldn't have find a inside outer function then it would have went more outer to find a and thus would have printed 100. So, it try to resolve variable in scope chain and if a wouldn't have been found it would have given reference error.
 
 **Q6: Discuss more on data hiding advantage**
 
@@ -649,6 +655,7 @@ function counter() {
     console.log(count);
   }
 }
+
 var counter1 = counter(); //counter function has closure with count var.
 counter1(); // increments counter
 
@@ -723,7 +730,7 @@ var b = function () {
 
     ```javascript
     function () {
-
+    
     } // this is going to throw Syntax Error - function Statement requires function name
     ```
 
@@ -885,7 +892,7 @@ document.getElementById("clickMe").addEventListener("click", function xyz() {
 
 None of the below are part of Javascript! These are extra superpowers that browser has. Browser gives access to JS callstack to use these powers.
 
-​ ![Event Loop 2 Demo](JavaScript%20Interview%20Questions.assets/eventloop2.jpg)
+ ![Event Loop 2 Demo](JavaScript%20Interview%20Questions.assets/eventloop2.jpg)
 
 -   setTimeout(), DOM APIs, fetch(), localstorage, console (yes, even console.log is not JS!!), location and so many more.
 
@@ -987,13 +994,13 @@ console.log("End");
 -   In console, first Start and End are printed in console. First cbF goes in callstack and "CB Netflix" is printed. cbF popped from callstack. Next cbT is removed from callback Queue, put in Call Stack, "CB Timeout" is printed, and cbT removed from callstack.
 -   See below Image for more understanding
 
-​ ![Event Loop 6 Demo](JavaScript%20Interview%20Questions.assets/eventloop6.jpg)
+ ![Event Loop 6 Demo](JavaScript%20Interview%20Questions.assets/eventloop6.jpg)
 
 ### setTimeout Issues
 
 -   setTimeout with timer of 5 secs sometimes does not exactly guarantees that the callback function will execute exactly after 5s.
 
--   Let's observe the below code and it's explaination
+- Let's observe the below code and it's explaination
 
     ```javascript
     console.log("Start");
@@ -1001,8 +1008,9 @@ console.log("End");
     	console.log("Callback");
     }, 5000);
     console.log("End");
+    
     // Millions of lines of code to execute
-
+    
     // o/p: Over here setTimeout exactly doesn't guarantee that the callback function will be called exactly after 5s. Maybe 6,7 or even 10! It all depends on callstack. Why?
     ```
 
@@ -1097,6 +1105,12 @@ const calculate = (radiusArr, operation) => {
 	return output;
 };
 ```
+
+## this keyword
+
+[Refer this](https://www.youtube.com/watch?v=rv7Q11KWmKU)
+
+Ek baar object ki video bhi dekh le
 
 ## Call, Apply and Bind
 
@@ -1210,7 +1224,7 @@ Say we have such a structure now if we click on child then the event is going to
     	},
     	true
     );
-
+    
     parent.addEventListener(
     	"click",
     	function () {
@@ -1218,7 +1232,7 @@ Say we have such a structure now if we click on child then the event is going to
     	},
     	false
     );
-
+    
     child.addEventListener(
     	"click",
     	function () {
@@ -1238,7 +1252,7 @@ Say we have such a structure now if we click on child then the event is going to
 
 ## Event Delegation
 
-_If we have a list of items which all needs to be clickable but we are not going to add event Listeners to all the items in the list since onClick event handlers are heavy_
+_If we have a list of items which all needs to be clickable but we are not going to add event Listeners to all the items in the list since click event handlers are heavy_
 
 **_We provide event listener to the parent and then acess the child elements using that_**
 
@@ -1317,31 +1331,33 @@ Generally we store objects in value
     let animal = {
     	eats : true
     }
-
+    
     let rabbit = {
     	jumps : true
     }
-
+    
     rabbit.__proto__ = animal; // rabbit ka prototype is animal now
     clg(rabbit.eats); // true eats is not in rabbit so it will follow the prototypal chain and will go to animal(its prototype) and finds eats there
 
 
-    --------------------------
-    let animal = {
-      eats: true,
-      walk() {
-        alert("Animal walk");
-      }
-    };
+~~~javascript
+--------------------------
+let animal = {
+  eats: true,
+  walk() {
+    alert("Animal walk");
+  }
+};
 
-    let rabbit = {
-      jumps: true,
-      __proto__: animal // can also do thiss
-    };
+let rabbit = {
+  jumps: true,
+  __proto__: animal // can also do thiss
+};
 
-    // walk is taken from the prototype
-    rabbit.walk(); // Animal walk
-    ```
+// walk is taken from the prototype
+rabbit.walk(); // Animal walk
+```
+~~~
 
 ## map, filter, reduce
 
@@ -1468,6 +1484,7 @@ function updateElementText(id) {
 const updateHeader = updateElementText("heading");
 // we can now call updateHeader again and again and it will update the content of the heading
 // we can now call updateHeader(content) or updateElementText(id)(content)
+updateHeader("so heading");
 ```
 
 ## Caching/Memoization Function
@@ -1504,6 +1521,10 @@ function myMemoize(fn, context) {
 		return res[argsCache];
 	};
 }
+
+const memoizedProduct = myMemoize(clumsyProduct);
+
+// make calls to memoizedproduct now
 ```
 
 ## Promises
@@ -1662,7 +1683,7 @@ clg(a.name); // There
     // Using JSON methods
     // doesnot copy functions
     const objCopy = JSON.parse(JSON.stringify(obj));
-
+    
     // using spread
     // doesnot clone nested objects
     const objCopy = { ...obj };
@@ -1708,7 +1729,7 @@ user.rc2(); // hello
     function myBio(firstName, lastName, company) {
     	return `${firstName} ${lastName} runs ${company}`;
     }
-
+    
     myBio(...["Oluwatobi", "Sofela", "CodeSweetly"]);
     ```
 
