@@ -57,7 +57,9 @@
 	- [Array.flat implementation](#arrayflat-implementation)
 		- [Custom function](#custom-function)
 	- [Debouncing and Throttling](#debouncing-and-throttling)
-	- [Callback Hell](#callback-hell)
+	- [Callbacks](#callbacks)
+		- [Why Callback](#why-callback)
+		- [Why not to use callback](#why-not-to-use-callback)
 
 Have a quick read of [InterviewBit Javascript Interview questions](https://www.interviewbit.com/javascript-interview-questions/) and [JavaScript Notes](../../Development/JavaScript.md)
 
@@ -1766,4 +1768,11 @@ function customFlat(arr, depth = 1) {
 
 [Refer This](https://medium.com/nerd-for-tech/debouncing-throttling-in-javascript-d36ace200cea#:~:text=Debouncing%20is%20a%20technique%20where,irrespective%20of%20continuous%20user%20actions)
 
-## Callback Hell
+
+**Some topics are going to get repeated but are explained properly now.**
+## Callbacks
+- Using [Namaste JavaScript Season 2 Playlist](https://www.youtube.com/watch?v=yEKtJGha3yM&list=PLlasXeu85E9eWOpw9jxHOQyGMRiBZ60aX&index=2)
+
+### Why Callback
+
+### Why not to use callback
